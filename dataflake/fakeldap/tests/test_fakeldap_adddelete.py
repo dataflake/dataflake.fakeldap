@@ -48,9 +48,9 @@ class FakeLDAPModifyTests(FakeLDAPTests):
         bar_values['cn'] = ['bar']
         modlist = addModlist(bar_values)
 
-        self.failIf(conn.search_s('ou=users,dc=localhost', query='(cn=bar)'))
+        self.assertFalse(conn.search_s('ou=users,dc=localhost', query='(cn=bar)'))
         conn.add_s('cn=bar,ou=users,dc=localhost', modlist)
-        self.failUnless(conn.search_s('ou=users,dc=localhost', query='(cn=bar)'))
+        self.assertTrue(conn.search_s('ou=users,dc=localhost', query='(cn=bar)'))
 
     def test_delete_wrongbase(self):
         import ldap
@@ -73,8 +73,8 @@ class FakeLDAPModifyTests(FakeLDAPTests):
         self._addUser('foo')
 
         foo = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
-        self.failUnless(foo)
+        self.assertTrue(foo)
         conn.delete_s('cn=foo,ou=users,dc=localhost')
         foo = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
-        self.failIf(foo)
+        self.assertFalse(foo)
 

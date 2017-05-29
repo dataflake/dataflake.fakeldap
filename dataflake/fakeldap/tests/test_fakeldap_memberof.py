@@ -30,7 +30,7 @@ class MemberOfTests(FakeLDAPTests):
 
     def test_connection_is_memberof(self):
         conn = self._makeOne()
-        self.assertEquals(conn.maintain_memberof, True)
+        self.assertEqual(conn.maintain_memberof, True)
 
     def test_add_group_updates_member_attr(self):
         conn = self._makeOne()
@@ -42,7 +42,7 @@ class MemberOfTests(FakeLDAPTests):
         res = conn.search_s( 'ou=groups,dc=localhost'
                            , query='(cn=engineering)'
                            )
-        self.assertEquals(sorted(res[0][1][conn.member_attr]),
+        self.assertEqual(sorted(res[0][1][conn.member_attr]),
             ['cn=bar,ou=users,dc=localhost',
              'cn=foo,ou=users,dc=localhost'])
 
@@ -56,19 +56,19 @@ class MemberOfTests(FakeLDAPTests):
         res = conn.search_s( 'ou=users,dc=localhost'
                            , query='(cn=foo)'
                            )
-        self.assertEquals(res[0][1][conn.memberof_attr],
+        self.assertEqual(res[0][1][conn.memberof_attr],
             ['cn=engineering,ou=groups,dc=localhost'])
 
         res = conn.search_s( 'ou=users,dc=localhost'
                            , query='(cn=bar)'
                            )
-        self.assertEquals(res[0][1][conn.memberof_attr],
+        self.assertEqual(res[0][1][conn.memberof_attr],
             ['cn=engineering,ou=groups,dc=localhost'])
 
         res = conn.search_s( 'ou=users,dc=localhost'
                            , query='(cn=baz)'
                            )
-        self.assertEquals(res[0][1].get(conn.memberof_attr, []),
+        self.assertEqual(res[0][1].get(conn.memberof_attr, []),
             [])
 
     def test_add_group_member_updates_memberof_attr(self):
@@ -85,19 +85,19 @@ class MemberOfTests(FakeLDAPTests):
         res = conn.search_s( 'ou=users,dc=localhost'
                            , query='(cn=foo)'
                            )
-        self.assertEquals(res[0][1][conn.memberof_attr],
+        self.assertEqual(res[0][1][conn.memberof_attr],
             ['cn=engineering,ou=groups,dc=localhost'])
 
         res = conn.search_s( 'ou=users,dc=localhost'
                            , query='(cn=bar)'
                            )
-        self.assertEquals(res[0][1][conn.memberof_attr],
+        self.assertEqual(res[0][1][conn.memberof_attr],
             ['cn=engineering,ou=groups,dc=localhost'])
 
         res = conn.search_s( 'ou=users,dc=localhost'
                            , query='(cn=baz)'
                            )
-        self.assertEquals(res[0][1].get(conn.memberof_attr, []),
+        self.assertEqual(res[0][1].get(conn.memberof_attr, []),
             [])
 
     def test_delete_group_member_updates_memberof_attr(self):
@@ -114,19 +114,19 @@ class MemberOfTests(FakeLDAPTests):
         res = conn.search_s( 'ou=users,dc=localhost'
                            , query='(cn=foo)'
                            )
-        self.assertEquals(res[0][1].get(conn.memberof_attr, []),
+        self.assertEqual(res[0][1].get(conn.memberof_attr, []),
             [])
 
         res = conn.search_s( 'ou=users,dc=localhost'
                            , query='(cn=bar)'
                            )
-        self.assertEquals(res[0][1][conn.memberof_attr],
+        self.assertEqual(res[0][1][conn.memberof_attr],
             ['cn=engineering,ou=groups,dc=localhost'])
 
         res = conn.search_s( 'ou=users,dc=localhost'
                            , query='(cn=baz)'
                            )
-        self.assertEquals(res[0][1][conn.memberof_attr],
+        self.assertEqual(res[0][1][conn.memberof_attr],
             ['cn=engineering,ou=groups,dc=localhost'])
 
     def test_delete_user_updates_member_attr(self):
@@ -141,7 +141,7 @@ class MemberOfTests(FakeLDAPTests):
         res = conn.search_s( 'ou=groups,dc=localhost'
                            , query='(cn=engineering)'
                            )
-        self.assertEquals(sorted(res[0][1][conn.member_attr]),
+        self.assertEqual(sorted(res[0][1][conn.member_attr]),
             ['cn=bar,ou=users,dc=localhost',
              'cn=baz,ou=users,dc=localhost'])
 
@@ -157,19 +157,19 @@ class MemberOfTests(FakeLDAPTests):
         res = conn.search_s( 'ou=users,dc=localhost'
                            , query='(cn=foo)'
                            )
-        self.assertEquals(res[0][1].get(conn.memberof_attr, []),
+        self.assertEqual(res[0][1].get(conn.memberof_attr, []),
             [])
 
         res = conn.search_s( 'ou=users,dc=localhost'
                            , query='(cn=bar)'
                            )
-        self.assertEquals(res[0][1].get(conn.memberof_attr, []),
+        self.assertEqual(res[0][1].get(conn.memberof_attr, []),
             [])
 
         res = conn.search_s( 'ou=users,dc=localhost'
                            , query='(cn=baz)'
                            )
-        self.assertEquals(res[0][1].get(conn.memberof_attr, []),
+        self.assertEqual(res[0][1].get(conn.memberof_attr, []),
             [])
 
 

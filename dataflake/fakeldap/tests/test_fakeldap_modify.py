@@ -44,8 +44,8 @@ class FakeLDAPModifyTests(FakeLDAPTests):
 
         foo = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
         old_values = foo[0][1]
-        self.assertEquals(old_values['objectClass'], ['top', 'person'])
-        self.failIf(old_values.get('mail'))
+        self.assertEqual(old_values['objectClass'], ['top', 'person'])
+        self.assertFalse(old_values.get('mail'))
         new_values = copy.deepcopy(old_values)
         new_values['objectClass'] = ['top', 'inetOrgPerson']
         new_values['mail'] = ['foo@email.com']
@@ -53,10 +53,10 @@ class FakeLDAPModifyTests(FakeLDAPTests):
         modlist = modifyModlist(old_values, new_values)
         conn.modify_s('cn=foo,ou=users,dc=localhost', modlist)
         foo = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
-        self.assertEquals( foo[0][1]['objectClass']
+        self.assertEqual( foo[0][1]['objectClass']
                          , ['top', 'inetOrgPerson']
                          )
-        self.assertEquals( foo[0][1]['mail']
+        self.assertEqual( foo[0][1]['mail']
                          , ['foo@email.com']
                          )
 
@@ -73,7 +73,7 @@ class FakeLDAPModifyTests(FakeLDAPTests):
         modlist = [(ldap.MOD_REPLACE, 'mail', ['foo@email.com'])]
         conn.modify_s('cn=foo,ou=users,dc=localhost', modlist)
         foo = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
-        self.assertEquals(foo[0][1]['mail'], ['foo@email.com'])
+        self.assertEqual(foo[0][1]['mail'], ['foo@email.com'])
 
     def test_modify_add(self):
         import ldap
@@ -88,7 +88,7 @@ class FakeLDAPModifyTests(FakeLDAPTests):
         modlist = [(ldap.MOD_ADD, 'mail', ['foo@email.com'])]
         conn.modify_s('cn=foo,ou=users,dc=localhost', modlist)
         foo = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
-        self.assertEquals( set(foo[0][1]['mail'])
+        self.assertEqual( set(foo[0][1]['mail'])
                          , set(['foo@email.com', 'foo@bar.com'])
                          )
 
@@ -133,7 +133,7 @@ class FakeLDAPModifyTests(FakeLDAPTests):
                            , scope=ldap.SCOPE_BASE
                            , query='(objectClass=*)'
                            )
-        self.failUnless(foo)
+        self.assertTrue(foo)
         self.assertRaises( ldap.NO_SUCH_OBJECT
                          , conn.search_s
                          , 'cn=bar,ou=users,dc=localhost'
@@ -152,5 +152,5 @@ class FakeLDAPModifyTests(FakeLDAPTests):
                            , scope=ldap.SCOPE_BASE
                            , query='(objectClass=*)'
                            )
-        self.failUnless(bar)
+        self.assertTrue(bar)
 

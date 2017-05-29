@@ -20,33 +20,33 @@ class FakeLDAPBasicTests(FakeLDAPTests):
 
     def test_defaults(self):
         conn = self._makeOne()
-        self.failIf(conn.start_tls_called)
-        self.failIf(conn.args)
-        self.failIf(conn.kwargs)
-        self.failIf(conn.options)
-        self.failIf(conn._last_bind)
+        self.assertFalse(conn.start_tls_called)
+        self.assertFalse(conn.args)
+        self.assertFalse(conn.kwargs)
+        self.assertFalse(conn.options)
+        self.assertFalse(conn._last_bind)
 
     def test_saving_args(self):
         conn = self._makeOne('arg1', 'arg2', arg3='foo', arg4='bar')
-        self.assertEquals(conn.args, ('arg1', 'arg2'))
-        self.assertEquals(conn.kwargs, {'arg3':'foo', 'arg4':'bar'})
+        self.assertEqual(conn.args, ('arg1', 'arg2'))
+        self.assertEqual(conn.kwargs, {'arg3':'foo', 'arg4':'bar'})
 
     def test_set_option(self):
         conn = self._makeOne()
         conn.set_option('foo', 'bar')
         conn.set_option(1, 2)
-        self.assertEquals(conn.options, {'foo':'bar', 1:2})
+        self.assertEqual(conn.options, {'foo':'bar', 1:2})
 
     def test_start_tls(self):
         conn = self._makeOne()
         conn.start_tls_s()
-        self.failUnless(conn.start_tls_called)
+        self.assertTrue(conn.start_tls_called)
 
     def test_result(self):
         conn = self._makeOne()
-        self.assertEquals( conn.result()
-                         , ( 'partial'
-                           , [('partial result', {'dn': 'partial result'})]
-                           )
-                         )
+        self.assertEqual( conn.result()
+                        , ( 'partial'
+                          , [('partial result', {'dn': 'partial result'})]
+                          )
+                        )
 
