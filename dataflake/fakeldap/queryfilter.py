@@ -35,6 +35,14 @@ class Filter(object):
         v2 = (other.attr.lower(), other.comp, other.value)
         return v1 == v2
 
+    def __lt__(self, other):
+        v1 = (self.attr.lower(), self.comp, self.value)
+        v2 = (other.attr.lower(), other.comp, other.value)
+        return v1 < v2
+
+    def __hash__(self):
+        return id(self)
+
     def __call__(self, tree_pos, base):
         res = []
         query_value = self.value[:]
@@ -56,7 +64,7 @@ class Filter(object):
         for rdn, record in tree_pos.items():
             found = True
 
-            if record.has_key(self.attr):
+            if self.attr in record:
                 if query_value == '*':
                     # Always include if there's a value for it.
                     pass

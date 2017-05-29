@@ -11,16 +11,14 @@
 #
 ##############################################################################
 
-import base64
-try:
-    from hashlib import sha1 as sha_new
-except ImportError: #pragma NO COVER
-    from sha import new as sha_new #pragma NO COVER
+from base64 import b64encode
+from hashlib import sha1 as sha_new
+import six
 
 
-def hash_pwd(string):
-    if isinstance(string, unicode):
-        string = string.encode('utf-8')
-    sha_digest = sha_new(string).digest()
-    return '{SHA}%s' % base64.encodestring(sha_digest).strip()
+def hash_pwd(pwd_str):
+    if isinstance(pwd_str, six.text_type):
+        pwd_str = pwd_str.encode('utf-8')
+    sha_digest = sha_new(pwd_str).digest()
+    return '{SHA}%s' % b64encode(sha_digest).strip()
 

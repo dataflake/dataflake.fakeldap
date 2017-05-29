@@ -27,7 +27,7 @@ class DataStore(dict):
         tree_pos = self
     
         for elem in elems:
-            if not tree_pos.has_key(elem):
+            if not elem in tree_pos:
                 tree_pos[elem] = {}
     
             tree_pos = tree_pos[elem]
@@ -48,7 +48,7 @@ class DataStore(dict):
         tree_pos = self
     
         for elem in elems:
-            if not tree_pos.has_key(elem):
+            if not elem in tree_pos:
                 raise ldap.NO_SUCH_OBJECT(elem)
             else:
                 tree_pos = tree_pos[elem]

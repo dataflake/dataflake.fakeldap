@@ -163,7 +163,7 @@ class FakeLDAPConnection:
         rdn = elems[0]
         tree_pos = TREE.getElementByDN(elems[1:])
 
-        if tree_pos.has_key(rdn):
+        if rdn in tree_pos:
             raise ldap.ALREADY_EXISTS(rdn)
 
         # Add rdn to attributes as well.
@@ -187,7 +187,7 @@ class FakeLDAPConnection:
         rdn = elems[0]
         tree_pos = TREE.getElementByDN(elems[1:])
 
-        if not tree_pos.has_key(rdn):
+        if not rdn in tree_pos:
             raise ldap.NO_SUCH_OBJECT(rdn)
 
         # Maintain memberOf
@@ -211,7 +211,7 @@ class FakeLDAPConnection:
         rdn = elems[0]
         tree_pos = TREE.getElementByDN(elems[1:])
 
-        if not tree_pos.has_key(rdn):
+        if not rdn in tree_pos:
             raise ldap.NO_SUCH_OBJECT(rdn)
 
         rec = deepcopy(tree_pos.get(rdn))
@@ -224,7 +224,7 @@ class FakeLDAPConnection:
                 cur_val.extend(mod[2])
                 rec[mod[1]] = cur_val
             else:
-                if rec.has_key(mod[1]):
+                if mod[1] in rec:
                     if mod[2] is None:
                         del rec[mod[1]]
                     else:
@@ -253,10 +253,10 @@ class FakeLDAPConnection:
         rdn = elems[0]
         tree_pos = TREE.getElementByDN(elems[1:])
 
-        if not tree_pos.has_key(rdn):
+        if not rdn in tree_pos:
             raise ldap.NO_SUCH_OBJECT(rdn)
 
-        if tree_pos.has_key(new_rdn):
+        if new_rdn in tree_pos:
             raise ldap.ALREADY_EXISTS(new_rdn)
 
         rec = tree_pos.get(rdn)
