@@ -51,7 +51,6 @@ setup(name='dataflake.fakeldap',
       include_package_data=True,
       namespace_packages=['dataflake'],
       zip_safe=False,
-      setup_requires=['setuptools-git'],
       install_requires=[
             'setuptools',
             'python-ldap',
