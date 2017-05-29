@@ -28,4 +28,3 @@ class HashPwdTests(unittest.TestCase):
         pwd = hash_pwd(u'bjørn')
         self.assertTrue(isinstance(pwd, str))
         self.assertTrue(pwd.startswith('{SHA}'))
-

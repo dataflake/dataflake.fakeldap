@@ -30,7 +30,7 @@ class FilterTests(unittest.TestCase):
 
     def test_comparison(self):
         fltr = self._makeOne('cn', '=', 'joe')
-        
+
         compare_1 = self._makeOne('cn', '=', 'joe')
         self.assertTrue(fltr == compare_1)
 
@@ -58,4 +58,3 @@ class FilterTests(unittest.TestCase):
 
         filter_list.sort()
         self.assertEqual(filter_list, [fltr_2, fltr_1])
-

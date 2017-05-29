@@ -11,31 +11,24 @@
 #
 ##############################################################################
 
-import unittest
-
 from dataflake.fakeldap.tests.base import FakeLDAPTests
+
 
 class FakeLDAPModifyTests(FakeLDAPTests):
 
     def test_add_wrongbase(self):
         import ldap
         conn = self._makeOne()
-        self.assertRaises( ldap.NO_SUCH_OBJECT
-                         , conn.add_s
-                         , 'cn=foo,o=base'
-                         , []
-                         )
+        self.assertRaises(ldap.NO_SUCH_OBJECT, conn.add_s,
+                          'cn=foo,o=base', [])
 
     def test_add_existing_clash(self):
         import ldap
         conn = self._makeOne()
         self._addUser('foo')
 
-        self.assertRaises( ldap.ALREADY_EXISTS
-                         , conn.add_s
-                         , 'cn=foo,ou=users,dc=localhost'
-                         , []
-                         )
+        self.assertRaises(ldap.ALREADY_EXISTS, conn.add_s,
+                          'cn=foo,ou=users,dc=localhost', [])
 
     def test_add_success(self):
         import copy
@@ -48,9 +41,11 @@ class FakeLDAPModifyTests(FakeLDAPTests):
         bar_values['cn'] = ['bar']
         modlist = addModlist(bar_values)
 
-        self.assertFalse(conn.search_s('ou=users,dc=localhost', query='(cn=bar)'))
+        self.assertFalse(conn.search_s('ou=users,dc=localhost',
+                                       query='(cn=bar)'))
         conn.add_s('cn=bar,ou=users,dc=localhost', modlist)
-        self.assertTrue(conn.search_s('ou=users,dc=localhost', query='(cn=bar)'))
+        self.assertTrue(conn.search_s('ou=users,dc=localhost',
+                                      query='(cn=bar)'))
 
     def test_delete_wrongbase(self):
         import ldap
@@ -62,13 +57,10 @@ class FakeLDAPModifyTests(FakeLDAPTests):
         conn = self._makeOne()
         self._addUser('foo')
 
-        self.assertRaises( ldap.NO_SUCH_OBJECT
-                         , conn.delete_s
-                         , 'cn=bar,ou=users,dc=localhost'
-                         )
+        self.assertRaises(ldap.NO_SUCH_OBJECT, conn.delete_s,
+                          'cn=bar,ou=users,dc=localhost')
 
     def test_delete_success(self):
-        import ldap
         conn = self._makeOne()
         self._addUser('foo')
 
@@ -77,4 +69,3 @@ class FakeLDAPModifyTests(FakeLDAPTests):
         conn.delete_s('cn=foo,ou=users,dc=localhost')
         foo = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
         self.assertFalse(foo)
-

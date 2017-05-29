@@ -21,4 +21,3 @@ def hash_pwd(pwd_str):
         pwd_str = pwd_str.encode('utf-8')
     sha_digest = sha_new(pwd_str).digest()
     return '{SHA}%s' % b64encode(sha_digest).strip()
-

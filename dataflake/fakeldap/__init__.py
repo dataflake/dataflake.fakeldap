@@ -18,8 +18,6 @@ import ldap
 from ldap.dn import explode_dn
 
 from dataflake.fakeldap.db import DataStore
-from dataflake.fakeldap.op import Op
-from dataflake.fakeldap.queryfilter import Filter
 from dataflake.fakeldap.queryparser import Parser
 from dataflake.fakeldap.utils import hash_pwd
 
@@ -59,10 +57,8 @@ class FakeLDAPConnection:
         if self.hash_password:
             bindpwd = hash_pwd(bindpwd)
 
-        rec = self.search_s( binduid
-                           , scope=ldap.SCOPE_BASE
-                           , attrs=('userPassword',)
-                           )
+        rec = self.search_s(binduid, scope=ldap.SCOPE_BASE,
+                            attrs=('userPassword',))
 
         rec_pwd = rec[0][1].get('userPassword')
 
@@ -91,11 +87,11 @@ class FakeLDAPConnection:
                 # Only if dn matches 'base'
                 return [(base, deepcopy(self._filter_attrs(tree_pos, attrs)))]
             else:
-                return [(k, deepcopy(self._filter_attrs(v, attrs))) 
-                                                for k, v in tree_pos.items()]
+                return [(k, deepcopy(self._filter_attrs(v, attrs)))
+                        for k, v in tree_pos.items()]
 
         if scope == ldap.SCOPE_BASE:
-            # At this stage tree_pos will be a leaf record. We need to 
+            # At this stage tree_pos will be a leaf record. We need to
             # "re-wrap" it.
             rdn = explode_dn(base)[0]
             tree_pos = {rdn: tree_pos}
@@ -153,8 +149,8 @@ class FakeLDAPConnection:
                         lvl[:] = new_lvl
         if by_level:
             # Return the last one.
-            return [(k, deepcopy(self._filter_attrs(v, attrs))) 
-                                                    for k, v in by_level[idx]]
+            return [(k, deepcopy(self._filter_attrs(v, attrs)))
+                    for k, v in by_level[idx]]
 
         return []
 
@@ -178,16 +174,17 @@ class FakeLDAPConnection:
             if self.maintain_memberof:
                 if key == self.member_attr:
                     for v in value:
-                        self.modify_s( v
-                                     , [(ldap.MOD_ADD, self.memberof_attr, [dn])]
-                                     )
+                        self.modify_s(v,
+                                      [(ldap.MOD_ADD,
+                                        self.memberof_attr,
+                                        [dn])])
 
     def delete_s(self, dn):
         elems = explode_dn(dn)
         rdn = elems[0]
         tree_pos = TREE.getElementByDN(elems[1:])
 
-        if not rdn in tree_pos:
+        if rdn not in tree_pos:
             raise ldap.NO_SUCH_OBJECT(rdn)
 
         # Maintain memberOf
@@ -195,14 +192,14 @@ class FakeLDAPConnection:
             record = tree_pos[rdn]
             if self.member_attr in record:
                 for value in record[self.member_attr]:
-                    self.modify_s( value
-                                 , [(ldap.MOD_DELETE, self.memberof_attr, [dn])]
-                                 )
+                    self.modify_s(value,
+                                  [(ldap.MOD_DELETE,
+                                    self.memberof_attr,
+                                    [dn])])
             if self.memberof_attr in record:
                 for value in record[self.memberof_attr]:
-                    self.modify_s( value
-                                 , [(ldap.MOD_DELETE, self.member_attr, [dn])]
-                                 )
+                    self.modify_s(value,
+                                  [(ldap.MOD_DELETE, self.member_attr, [dn])])
 
         del tree_pos[rdn]
 
@@ -211,7 +208,7 @@ class FakeLDAPConnection:
         rdn = elems[0]
         tree_pos = TREE.getElementByDN(elems[1:])
 
-        if not rdn in tree_pos:
+        if rdn not in tree_pos:
             raise ldap.NO_SUCH_OBJECT(rdn)
 
         rec = deepcopy(tree_pos.get(rdn))
@@ -243,17 +240,23 @@ class FakeLDAPConnection:
                 if mod[1] == self.member_attr:
                     if mod[0] == ldap.MOD_ADD:
                         for v in mod[2]:
-                            self.modify_s(v, [(ldap.MOD_ADD, self.memberof_attr, [dn])])
+                            self.modify_s(v,
+                                          [(ldap.MOD_ADD,
+                                            self.memberof_attr,
+                                            [dn])])
                     elif mod[0] == ldap.MOD_DELETE:
                         for v in mod[2]:
-                            self.modify_s(v, [(ldap.MOD_DELETE, self.memberof_attr, [dn])])
+                            self.modify_s(v,
+                                          [(ldap.MOD_DELETE,
+                                            self.memberof_attr,
+                                            [dn])])
 
     def modrdn_s(self, dn, new_rdn, *ign):
         elems = explode_dn(dn)
         rdn = elems[0]
         tree_pos = TREE.getElementByDN(elems[1:])
 
-        if not rdn in tree_pos:
+        if rdn not in tree_pos:
             raise ldap.NO_SUCH_OBJECT(rdn)
 
         if new_rdn in tree_pos:
@@ -288,6 +291,7 @@ class RaisingFakeLDAPConnection(FakeLDAPConnection):
 
         hideaway = '%s_old' % raise_on
         setattr(self, hideaway, getattr(self, raise_on))
+
         def func(*args, **kw):
             if len(self.exception_list) <= 1:
                 setattr(self, raise_on, getattr(self, hideaway))
@@ -305,12 +309,11 @@ class RaisingFakeLDAPConnection(FakeLDAPConnection):
 class FixedResultFakeLDAPConnection(FakeLDAPConnection):
     search_results = []
 
-    def search_s( self, base, scope=ldap.SCOPE_SUBTREE,
-                  query='(objectClass=*)', attrs=() ):
+    def search_s(self, base, scope=ldap.SCOPE_SUBTREE,
+                 query='(objectClass=*)', attrs=()):
         return self.search_results
 
 
 class ldapobject:
     class ReconnectLDAPObject(FakeLDAPConnection):
         pass
-

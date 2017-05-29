@@ -27,4 +27,3 @@ class OpTests(unittest.TestCase):
     def test_repr(self):
         op = self._makeOne('!')
         self.assertEqual(repr(op), "Op('!')")
-

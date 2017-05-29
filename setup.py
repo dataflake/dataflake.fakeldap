@@ -15,19 +15,22 @@ __version__ = '1.2dev'
 
 import os
 
-from setuptools import setup, find_packages
+from setuptools import find_packages
+from setuptools import setup
+
+
+_boundary = '\n' + ('-' * 60) + '\n\n'
+_dl = '\n\nDownload\n========'
+
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
-_boundary = '\n' + ('-' * 60) + '\n\n'
 
 setup(name='dataflake.fakeldap',
       version=__version__,
       description='LDAP connection library',
-      long_description=( read('README.txt') 
-                       + "\n\nDownload\n========"
-                       ),
+      long_description=(read('README.txt') + _dl),
       classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
@@ -38,7 +41,8 @@ setup(name='dataflake.fakeldap',
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Software Development :: Testing",
-        "Topic :: System :: Systems Administration :: Authentication/Directory :: LDAP",
+        "Topic :: System :: Systems Administration :: \
+         Authentication/Directory :: LDAP",
         ],
       keywords='ldap ldapv3',
       author="Jens Vagelpohl",
@@ -55,12 +59,7 @@ setup(name='dataflake.fakeldap',
             ],
       tests_require=['pyldap'],
       test_suite='dataflake.fakeldap.tests',
-      extras_require={ 'docs': [ 'sphinx'
-                               , 'pkginfo'
-                               , 'sphinx-pypi-upload'
-                               , 'zc.rst2'
-                               ]
-                     , 'testing': ['nose', 'coverage']
-                     },
+      extras_require={'docs': ['sphinx', 'pkginfo', 'sphinx-pypi-upload',
+                               'zc.rst2'],
+                      'testing': ['nose', 'coverage']},
       )
-

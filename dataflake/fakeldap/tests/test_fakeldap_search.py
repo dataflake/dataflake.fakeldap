@@ -72,19 +72,16 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self.assertEqual(len(dn_values), 3)
         # Note: searches for all results and not scope BASE will return
         # RDNs instead of full DNs
-        self.assertEqual( set(dn_values)
-                         , set(['cn=foo', 'cn=bar', 'cn=baz'])
-                         )
+        self.assertEqual(set(dn_values),
+                         set(['cn=foo', 'cn=bar', 'cn=baz']))
 
     def test_search_nonspecific_scope_base(self):
         import ldap
         conn = self._makeOne()
         user_dn, password = self._addUser('foo')
 
-        res = conn.search_s( user_dn
-                           , scope=ldap.SCOPE_BASE
-                           , query='(objectClass=*)'
-                           )
+        res = conn.search_s(user_dn, scope=ldap.SCOPE_BASE,
+                            query='(objectClass=*)')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 1)
         self.assertEqual(dn_values, ['cn=foo,ou=users,dc=localhost'])
@@ -94,10 +91,8 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         conn = self._makeOne()
         user_dn, password = self._addUser('foo')
 
-        res = conn.search_s( user_dn
-                           , scope=ldap.SCOPE_BASE
-                           , query='(&(objectClass=person)(cn=foo))'
-                           )
+        res = conn.search_s(user_dn, scope=ldap.SCOPE_BASE,
+                            query='(&(objectClass=person)(cn=foo))')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 1)
         self.assertEqual(dn_values, ['cn=foo,ou=users,dc=localhost'])
@@ -111,12 +106,10 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         res = conn.search_s('ou=users,dc=localhost', query='(cn=*)')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 3)
-        self.assertEqual( set(dn_values)
-                         , set( [ 'cn=foo,ou=users,dc=localhost'
-                                , 'cn=footwo,ou=users,dc=localhost'
-                                , 'cn=threefoo,ou=users,dc=localhost'
-                                ] )
-                         )
+        self.assertEqual(set(dn_values),
+                         set(['cn=foo,ou=users,dc=localhost',
+                              'cn=footwo,ou=users,dc=localhost',
+                              'cn=threefoo,ou=users,dc=localhost']))
 
     def test_search_startswithendswith_wildcard(self):
         conn = self._makeOne()
@@ -128,12 +121,10 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         res = conn.search_s('ou=users,dc=localhost', query='(cn=*foo*)')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 3)
-        self.assertEqual( set(dn_values)
-                         , set( [ 'cn=foo,ou=users,dc=localhost'
-                                , 'cn=onefootwo,ou=users,dc=localhost'
-                                , 'cn=threefoo,ou=users,dc=localhost'
-                                ] )
-                         )
+        self.assertEqual(set(dn_values),
+                         set(['cn=foo,ou=users,dc=localhost',
+                              'cn=onefootwo,ou=users,dc=localhost',
+                              'cn=threefoo,ou=users,dc=localhost']))
 
     def test_search_endswith_wildcard(self):
         conn = self._makeOne()
@@ -144,11 +135,9 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         res = conn.search_s('ou=users,dc=localhost', query='(cn=*foo)')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 2)
-        self.assertEqual( set(dn_values)
-                         , set( [ 'cn=foo,ou=users,dc=localhost'
-                                , 'cn=threefoo,ou=users,dc=localhost'
-                                ] )
-                         )
+        self.assertEqual(set(dn_values),
+                         set(['cn=foo,ou=users,dc=localhost',
+                              'cn=threefoo,ou=users,dc=localhost']))
 
     def test_search_startswith_wildcard(self):
         conn = self._makeOne()
@@ -159,11 +148,9 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         res = conn.search_s('ou=users,dc=localhost', query='(cn=foo*)')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 2)
-        self.assertEqual( set(dn_values)
-                         , set( [ 'cn=foo,ou=users,dc=localhost'
-                                , 'cn=footwo,ou=users,dc=localhost'
-                                ] )
-                         )
+        self.assertEqual(set(dn_values),
+                         set(['cn=foo,ou=users,dc=localhost',
+                              'cn=footwo,ou=users,dc=localhost']))
 
     def test_search_anded_filter(self):
         conn = self._makeOne()
@@ -187,26 +174,20 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('bar')
         self._addUser('baz')
 
-        res = conn.search_s( 'ou=users,dc=localhost'
-                           , query='(|(cn=foo)(cn=bar))'
-                           )
+        res = conn.search_s('ou=users,dc=localhost',
+                            query='(|(cn=foo)(cn=bar))')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 2)
-        self.assertEqual( set(dn_values)
-                         , set( [ 'cn=foo,ou=users,dc=localhost'
-                                , 'cn=bar,ou=users,dc=localhost'
-                                ] )
-                         )
-    
+        self.assertEqual(set(dn_values),
+                         set(['cn=foo,ou=users,dc=localhost',
+                              'cn=bar,ou=users,dc=localhost']))
+
     def test_search_invalid_base(self):
         import ldap
         conn = self._makeOne()
         self._addUser('foo')
-        self.assertRaises( ldap.NO_SUCH_OBJECT
-                         , conn.search_s
-                         , 'o=base'
-                         , query='(objectClass=*)'
-                         )
+        self.assertRaises(ldap.NO_SUCH_OBJECT, conn.search_s,
+                          'o=base', query='(objectClass=*)')
 
     def test_search_by_mail(self):
         conn = self._makeOne()
@@ -214,16 +195,13 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('bar', mail='bar@bar.com')
         self._addUser('baz', mail='baz@baz.com')
 
-        res = conn.search_s( 'ou=users,dc=localhost'
-                           , query='(|(mail=foo@foo.com)(mail=bar@bar.com))'
-                           )
+        res = conn.search_s('ou=users,dc=localhost',
+                            query='(|(mail=foo@foo.com)(mail=bar@bar.com))')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 2)
-        self.assertEqual( set(dn_values)
-                         , set( [ 'cn=foo,ou=users,dc=localhost'
-                                , 'cn=bar,ou=users,dc=localhost'
-                                ] )
-                         )
+        self.assertEqual(set(dn_values),
+                         set(['cn=foo,ou=users,dc=localhost',
+                              'cn=bar,ou=users,dc=localhost']))
 
     def test_search_by_utf8(self):
         conn = self._makeOne()
@@ -231,25 +209,20 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('bår')
         self._addUser('baz')
 
-        res = conn.search_s( 'ou=users,dc=localhost'
-                           , query='(|(cn=føø)(cn=bår))'
-                           )
+        res = conn.search_s('ou=users,dc=localhost',
+                            query='(|(cn=føø)(cn=bår))')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 2)
-        self.assertEqual( set(dn_values)
-                         , set( [ 'cn=føø,ou=users,dc=localhost'
-                                , 'cn=bår,ou=users,dc=localhost'
-                                ] )
-                         )
+        self.assertEqual(set(dn_values),
+                         set(['cn=føø,ou=users,dc=localhost',
+                              'cn=bår,ou=users,dc=localhost']))
 
     def test_return_all_attributes(self):
         conn = self._makeOne()
         self._addUser('foo', mail='foo@foo.com')
 
-        res = conn.search_s( 'ou=users,dc=localhost'
-                           , query='(cn=foo)'
-                           , attrs=None
-                           )
+        res = conn.search_s('ou=users,dc=localhost',
+                            query='(cn=foo)', attrs=None)
         self.assertEqual(len(res), 1)
         dn, attr_dict = res[0]
         self.assertEqual(dn, 'cn=foo,ou=users,dc=localhost')
@@ -262,10 +235,8 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         conn = self._makeOne()
         self._addUser('foo', mail='foo@foo.com')
 
-        res = conn.search_s( 'ou=users,dc=localhost'
-                           , query='(cn=foo)'
-                           , attrs=['cn', 'mail']
-                           )
+        res = conn.search_s('ou=users,dc=localhost',
+                            query='(cn=foo)', attrs=['cn', 'mail'])
         self.assertEqual(len(res), 1)
         dn, attr_dict = res[0]
         self.assertEqual(dn, 'cn=foo,ou=users,dc=localhost')
@@ -273,4 +244,3 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self.assertTrue('mail' in attr_dict)
         self.assertFalse('userPassword' in attr_dict)
         self.assertFalse('objectClass' in attr_dict)
-

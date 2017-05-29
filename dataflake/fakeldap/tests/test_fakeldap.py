@@ -11,8 +11,6 @@
 #
 ##############################################################################
 
-import unittest
-
 from dataflake.fakeldap.tests.base import FakeLDAPTests
 
 
@@ -29,13 +27,13 @@ class FakeLDAPBasicTests(FakeLDAPTests):
     def test_saving_args(self):
         conn = self._makeOne('arg1', 'arg2', arg3='foo', arg4='bar')
         self.assertEqual(conn.args, ('arg1', 'arg2'))
-        self.assertEqual(conn.kwargs, {'arg3':'foo', 'arg4':'bar'})
+        self.assertEqual(conn.kwargs, {'arg3': 'foo', 'arg4': 'bar'})
 
     def test_set_option(self):
         conn = self._makeOne()
         conn.set_option('foo', 'bar')
         conn.set_option(1, 2)
-        self.assertEqual(conn.options, {'foo':'bar', 1:2})
+        self.assertEqual(conn.options, {'foo': 'bar', 1: 2})
 
     def test_start_tls(self):
         conn = self._makeOne()
@@ -44,9 +42,6 @@ class FakeLDAPBasicTests(FakeLDAPTests):
 
     def test_result(self):
         conn = self._makeOne()
-        self.assertEqual( conn.result()
-                        , ( 'partial'
-                          , [('partial result', {'dn': 'partial result'})]
-                          )
-                        )
-
+        self.assertEqual(conn.result(),
+                         ('partial',
+                          [('partial result', {'dn': 'partial result'})]))

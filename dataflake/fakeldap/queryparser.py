@@ -47,7 +47,8 @@ from dataflake.fakeldap.queryfilter import Filter
 _FLTR = r'\(\w*?=[\*\w\s=,\\]*?\)'
 _OP = '[&\|\!]{1}'
 
-FLTR = r'\((?P<attr>\w*?)(?P<comp>=)(?P<value>[\*\w\s=,\\\'@\-\+_\.øØæÆåÅäÄöÖüÜß]*?)\)'
+FLTR = (r'\((?P<attr>\w*?)(?P<comp>=)' +
+        '(?P<value>[\*\w\s=,\\\'@\-\+_\.øØæÆåÅäÄöÖüÜß]*?)\)')
 FLTR_RE = re.compile(FLTR + '(?P<fltr>.*)')
 
 FULL = '\((?P<op>(%s))(?P<fltr>.*)\)' % _OP
@@ -79,14 +80,14 @@ class Parser(object):
                 if rest:
                     parts.extend(self.parse_query(rest))
                 return tuple(parts)
-    
+
         # Match internal filter.
         d = FLTR_RE.match(query).groupdict()
         parts.append(Filter(d['attr'], d['comp'], d['value']))
         if d['fltr']:
             parts.extend(self.parse_query(d['fltr'], recurse=True))
         return tuple(parts)
-    
+
     def flatten_query(self, query, klass=Filter):
         """ Flatten a sequence of Ops/Filters leaving only ``klass`` instances
         """
@@ -95,11 +96,12 @@ class Parser(object):
             if isinstance(item, tuple):
                 q.extend(self.flatten_query(item, klass))
         return tuple(q)
-    
+
     def explode_query(self, query):
         """ Separate a parsed query into operations
         """
         res = []
+
         def dig(sub, res):
             level = []
             for item in sub:
@@ -112,7 +114,7 @@ class Parser(object):
                 else:
                     level.append(item)
             return tuple(level)
-    
+
         level = dig(query, res)
         if not res:
             # A simple filter with no operands
@@ -122,17 +124,16 @@ class Parser(object):
             assert len(level) == 1, (len(level), level)
             res.append((level[0], ()))
         return tuple(res)
-    
+
     def cmp_query(self, query, other, strict=False):
         """ Compare parsed queries and return common query elements
         """
         q1 = self.flatten_query(query)
         q2 = self.flatten_query(other)
-    
+
         if strict:
             return q1 == q2
-    
+
         for fltr in q2:
             if fltr in q1:
                 return fltr
-

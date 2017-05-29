@@ -18,20 +18,20 @@ from ldap.dn import explode_dn
 class DataStore(dict):
 
     def addTreeItems(self, dn):
-        """ Add structure directly to the tree given a DN 
-    
+        """ Add structure directly to the tree given a DN
+
         returns the last added tree position for convenience
         """
         elems = explode_dn(dn)
         elems.reverse()
         tree_pos = self
-    
+
         for elem in elems:
-            if not elem in tree_pos:
+            if elem not in tree_pos:
                 tree_pos[elem] = {}
-    
+
             tree_pos = tree_pos[elem]
-    
+
         return tree_pos
 
     def getElementByDN(self, dn):
@@ -46,12 +46,11 @@ class DataStore(dict):
 
         elems.reverse()
         tree_pos = self
-    
+
         for elem in elems:
-            if not elem in tree_pos:
+            if elem not in tree_pos:
                 raise ldap.NO_SUCH_OBJECT(elem)
             else:
                 tree_pos = tree_pos[elem]
 
         return tree_pos
-

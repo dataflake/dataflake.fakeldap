@@ -15,6 +15,7 @@
 
 import unittest
 
+
 class FakeLDAPTests(unittest.TestCase):
 
     def setUp(self):
@@ -45,10 +46,8 @@ class FakeLDAPTests(unittest.TestCase):
         else:
             pwd = user_pwd
 
-        user = [ ('cn', [name])
-               , ('userPassword', [pwd])
-               , ('objectClass', ['top', 'person'])
-               ]
+        user = [('cn', [name]), ('userPassword', [pwd]),
+                ('objectClass', ['top', 'person'])]
         if mail is not None:
             user.append(('mail', [mail]))
 
@@ -59,13 +58,10 @@ class FakeLDAPTests(unittest.TestCase):
         conn = self._makeOne()
         group_dn = 'cn=%s,ou=groups,dc=localhost' % name
 
-        group = [ ('cn', [name])
-                , ('objectClass', ['top', 'group'])
-                ]
+        group = [('cn', [name]), ('objectClass', ['top', 'group'])]
         if members is not None:
             members = ['cn=%s,ou=users,dc=localhost' % x for x in members]
             group.append((conn.member_attr, members))
 
         conn.add_s(group_dn, group)
         return group_dn
-

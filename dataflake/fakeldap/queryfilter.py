@@ -11,8 +11,6 @@
 #
 ##############################################################################
 
-from ldap.dn import explode_dn
-
 
 class Filter(object):
     """ A simple representation for search filter elements
@@ -25,10 +23,6 @@ class Filter(object):
 
     def __repr__(self):
         return "Filter('%s', '%s', '%s')" % (self.attr, self.comp, self.value)
-
-    def __cmp__(self, other):
-        return cmp((self.attr.lower(), self.comp, self.value),
-                   (other.attr.lower(), other.comp, other.value))
 
     def __eq__(self, other):
         v1 = (self.attr.lower(), self.comp, self.value)
@@ -83,7 +77,7 @@ class Filter(object):
                             if query_value in x:
                                 found = True
                                 break
-                elif not query_value in record[self.attr]:
+                elif query_value not in record[self.attr]:
                     found = False
 
                 if found:
@@ -94,4 +88,3 @@ class Filter(object):
                     res.append((dn, record))
 
         return res
-

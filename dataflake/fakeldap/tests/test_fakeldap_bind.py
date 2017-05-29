@@ -44,11 +44,8 @@ class FakeLDAPBindTests(FakeLDAPTests):
         user_dn, password = self._addUser('foo')
 
         # Login with bad credentials
-        self.assertRaises( ldap.INVALID_CREDENTIALS
-                         , conn.simple_bind_s
-                         , user_dn
-                         , 'INVALID PASSWORD'
-                         )
+        self.assertRaises(ldap.INVALID_CREDENTIALS, conn.simple_bind_s,
+                          user_dn, 'INVALID PASSWORD')
 
     def test_bind_no_password_in_record(self):
         import ldap
@@ -57,11 +54,8 @@ class FakeLDAPBindTests(FakeLDAPTests):
         # Users with empty passwords cannot log in
         user2 = [('cn', ['user2'])]
         conn.add_s('cn=user2,ou=users,dc=localhost', user2)
-        self.assertRaises( ldap.INVALID_CREDENTIALS
-                         , conn.simple_bind_s
-                         , 'cn=user2,ou=users,dc=localhost'
-                         , 'ANY PASSWORD'
-                         )
+        self.assertRaises(ldap.INVALID_CREDENTIALS, conn.simple_bind_s,
+                          'cn=user2,ou=users,dc=localhost', 'ANY PASSWORD')
 
     def test_bind_no_such_user(self):
         import ldap
@@ -70,11 +64,8 @@ class FakeLDAPBindTests(FakeLDAPTests):
         # Users with empty passwords cannot log in
         user2 = [('cn', ['user2'])]
         conn.add_s('cn=user2,ou=users,dc=localhost', user2)
-        self.assertRaises( ldap.NO_SUCH_OBJECT
-                         , conn.simple_bind_s
-                         , 'cn=user1,ou=users,dc=localhost'
-                         , 'ANY PASSWORD'
-                         )
+        self.assertRaises(ldap.NO_SUCH_OBJECT, conn.simple_bind_s,
+                          'cn=user1,ou=users,dc=localhost', 'ANY PASSWORD')
 
     def test_unbind_clears_last_bind(self):
         conn = self._makeOne()
@@ -108,9 +99,7 @@ class HashedPasswordTests(FakeLDAPTests):
         conn = self._makeOne()
         self._addUser('foo')
 
-        res = conn.search_s( 'ou=users,dc=localhost'
-                           , query='(cn=foo)'
-                           )
+        res = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
         pwd = res[0][1]['userPassword'][0]
         self.assertEqual(pwd, hash_pwd('foo_secret'))
 
@@ -128,11 +117,8 @@ class HashedPasswordTests(FakeLDAPTests):
         user_dn, password = self._addUser('foo')
 
         # Login with bad credentials
-        self.assertRaises( ldap.INVALID_CREDENTIALS
-                         , conn.simple_bind_s
-                         , user_dn
-                         , 'INVALID PASSWORD'
-                         )
+        self.assertRaises(ldap.INVALID_CREDENTIALS, conn.simple_bind_s,
+                          user_dn, 'INVALID PASSWORD')
 
 
 class ClearTextPasswordTests(FakeLDAPTests):
@@ -155,9 +141,7 @@ class ClearTextPasswordTests(FakeLDAPTests):
         conn = self._makeOne()
         user_dn, password = self._addUser('foo')
 
-        res = conn.search_s( 'ou=users,dc=localhost'
-                           , query='(cn=foo)'
-                           )
+        res = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
         pwd = res[0][1]['userPassword'][0]
         self.assertEqual(pwd, 'foo_secret')
 
@@ -177,9 +161,5 @@ class ClearTextPasswordTests(FakeLDAPTests):
         user_dn, password = self._addUser('foo')
 
         # Login with bad credentials
-        self.assertRaises( ldap.INVALID_CREDENTIALS
-                         , conn.simple_bind_s
-                         , user_dn
-                         , 'INVALID PASSWORD'
-                         )
-
+        self.assertRaises(ldap.INVALID_CREDENTIALS, conn.simple_bind_s,
+                          user_dn, 'INVALID PASSWORD')
