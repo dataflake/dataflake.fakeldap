@@ -1,10 +1,8 @@
 Installation
 ============
 
-You will need `Python <http://python.org>`_ version 2.4 or better to
-run :mod:`dataflake.fakeldap`.  Development of 
-:mod:`dataflake.fakeldap` is done primarily under Python 2.7, so 
-that version is recommended.
+You will need `Python <http://python.org>`_ version 2.7 or better to
+run :mod:`dataflake.fakeldap`.
 
 .. warning:: To successfully install :mod:`dataflake.fakeldap`, 
    you will need :term:`setuptools` installed on your Python system 
