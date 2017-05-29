@@ -2,8 +2,8 @@
  dataflake.fakeldap
 ====================
 
-This package offers a mock ``python-ldap`` library that can be used 
-for testing code relying on ``python-ldap`` without having to configure 
+This package offers a mock ``pyldap`` library that can be used 
+for testing code relying on ``pyldap`` without having to configure 
 and populate a real directory server.
 
 

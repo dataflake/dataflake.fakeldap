@@ -4,6 +4,7 @@ Change log
 1.2 (unreleased)
 ----------------
 - For Python 2.x, only support Python 2.7 now
+- switch from ``python-ldap`` to ``pyldap`` for Python 3 compatibility
 
 
 1.1 (2012-10-18)

@@ -51,9 +51,9 @@ setup(name='dataflake.fakeldap',
       zip_safe=False,
       install_requires=[
             'setuptools',
-            'python-ldap',
+            'pyldap',
             ],
-      tests_require=['python-ldap'],
+      tests_require=['pyldap'],
       test_suite='dataflake.fakeldap.tests',
       extras_require={ 'docs': [ 'sphinx'
                                , 'pkginfo'
