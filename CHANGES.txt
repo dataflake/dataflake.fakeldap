@@ -7,6 +7,7 @@ Change log
 - switch from ``python-ldap`` to ``pyldap`` for Python 3 compatibility
 - add PEP 8 testing with ``flake8`` to the ``tox`` test config
 - code reformatting for PEP 8
+- Python 3 compatibilty
 
 
 1.1 (2012-10-18)
