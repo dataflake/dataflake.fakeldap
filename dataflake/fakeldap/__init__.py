@@ -15,10 +15,10 @@
 
 from copy import deepcopy
 import ldap
-from ldap.dn import explode_dn
 
 from dataflake.fakeldap.db import DataStore
 from dataflake.fakeldap.queryparser import Parser
+from dataflake.fakeldap.utils import explode_dn
 from dataflake.fakeldap.utils import hash_pwd
 
 PARSER = Parser()

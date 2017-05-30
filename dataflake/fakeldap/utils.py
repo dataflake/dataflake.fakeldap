@@ -13,6 +13,7 @@
 
 from base64 import b64encode
 from hashlib import sha1 as sha_new
+import ldap.dn
 import six
 
 
@@ -21,3 +22,13 @@ def hash_pwd(pwd_str):
         pwd_str = pwd_str.encode('utf-8')
     sha_digest = sha_new(pwd_str).digest()
     return '{SHA}%s' % b64encode(sha_digest).strip()
+
+
+def explode_dn(dn):
+    parts = []
+    raw_parts = ldap.dn.explode_dn(dn)
+    for part in raw_parts:
+        if six.PY2 and isinstance(part, six.text_type):
+            part = part.encode('UTF-8')
+        parts.append(part)
+    return parts

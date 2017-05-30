@@ -12,7 +12,8 @@
 ##############################################################################
 
 import ldap
-from ldap.dn import explode_dn
+
+from dataflake.fakeldap.utils import explode_dn
 
 
 class DataStore(dict):
