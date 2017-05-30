@@ -11,8 +11,6 @@
 #
 ##############################################################################
 
-__version__ = '1.2dev'
-
 import os
 
 from setuptools import find_packages
@@ -21,14 +19,15 @@ from setuptools import setup
 
 _boundary = '\n' + ('-' * 60) + '\n\n'
 _dl = '\n\nDownload\n========'
+NAME = 'dataflake.fakeldap'
 
 
 def read(*rnames):
     return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
 
 
-setup(name='dataflake.fakeldap',
-      version=__version__,
+setup(name=NAME,
+      version=read('version.txt').strip(),
       description='LDAP connection library',
       long_description=(read('README.txt') + _dl),
       classifiers=[
@@ -38,6 +37,10 @@ setup(name='dataflake.fakeldap',
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Software Development :: Testing",
@@ -47,18 +50,19 @@ setup(name='dataflake.fakeldap',
       keywords='ldap ldapv3',
       author="Jens Vagelpohl",
       author_email="jens@dataflake.org",
-      url="http://pypi.python.org/pypi/dataflake.fakeldap",
+      url="http://pypi.python.org/pypi/%s" % NAME,
       license="ZPL 2.1",
       packages=find_packages(),
       include_package_data=True,
       namespace_packages=['dataflake'],
       zip_safe=False,
       install_requires=[
-            'setuptools',
-            'pyldap',
-            ],
+        'setuptools',
+        'pyldap',
+        ],
+      zip_safe=False,
       tests_require=['pyldap'],
-      test_suite='dataflake.fakeldap.tests',
+      test_suite='%s.tests' % NAME,
       extras_require={'docs': ['sphinx', 'pkginfo', 'sphinx-pypi-upload',
                                'zc.rst2'],
                       'testing': ['nose', 'coverage']},
