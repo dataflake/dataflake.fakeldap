@@ -54,7 +54,6 @@ setup(name=NAME,
       license="ZPL 2.1",
       packages=find_packages(),
       include_package_data=True,
-      namespace_packages=['dataflake'],
       zip_safe=False,
       install_requires=[
         'setuptools',
