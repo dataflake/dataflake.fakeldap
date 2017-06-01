@@ -4,10 +4,6 @@ Installation
 You will need `Python <http://python.org>`_ version 2.7 or better to
 run :mod:`dataflake.fakeldap`.
 
-.. warning:: To successfully install :mod:`dataflake.fakeldap`, 
-   you will need :term:`setuptools` installed on your Python system 
-   in order to run the ``easy_install`` command.
-
 It is advisable to install :mod:`dataflake.fakeldap` into a
 :term:`virtualenv` in order to obtain isolation from any "system"
 packages you've got installed in your Python version (and likewise, 
@@ -20,8 +16,12 @@ following command::
 
   $ easy_install dataflake.fakeldap
 
+or::
+
+  $ pip install dataflake.fakeldap
+
 If you use :mod:`zc.buildout` you can add :mod:`dataflake.fakeldap`
 to the necessary ``eggs`` section to have it pulled in automatically.
 
-When you ``easy_install`` :mod:`dataflake.fakeldap`, the
+When you ``easy_install``  or ``pip`` :mod:`dataflake.fakeldap`, the
 :term:`pyldap` libraries are installed if they are not present.

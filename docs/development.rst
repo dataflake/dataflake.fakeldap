@@ -4,22 +4,14 @@
 
 Getting the source code
 =======================
-The source code is maintained in the Dataflake Git 
-repository. To check out the trunk:
-
-.. code-block:: sh
-
-  $ git clone https://git.dataflake.org/git/dataflake.fakeldap
-
-You can also browse the code online at 
-http://git.dataflake.org/cgit/dataflake.fakeldap
+The source code is maintained on GitHub at
+https://github.com/dataflake/dataflake.fakeldap
 
 
 Bug tracker
 ===========
 For bug reports, suggestions or questions please use the 
-Launchpad bug tracker at 
-https://bugs.launchpad.net/dataflake.fakeldap .
+issue tracker at https://github.com/dataflake/dataflake.fakeldap/issues.
 
 
 Sharing Your Changes
@@ -179,28 +171,12 @@ its code snippets:
 
 .. code-block:: sh
 
-    $ bin/docbuilder.sh
-    rm -rf _build/*
-    sphinx-build -b html -d _build/doctrees   . _build/html
-    Making output directory...
-    Running Sphinx v1.1.3
+    $ cd docs
+    $ make html
     ...
     build succeeded.
 
-    Build finished. The HTML pages are in .../docs/_build/html.
-
-To build the documentation as PDF you first need to ensure your system 
-has a latex2pdf binary installed.
-
-.. code-block:: sh
-
-    $ bin/pdfbuilder.sh
-    sphinx-build -b latex -d _build/doctrees   . _build/latex
-    Making output directory...
-    Running Sphinx v1.1.3
-    ...
-    Output written on dataflake.fakeldap.pdf (15 pages, 96151 bytes).
-    Transcript written on dataflake.fakeldap.log.
+    Build finished. The HTML pages are in _build/html.
 
 
 Making a release
