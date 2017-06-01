@@ -1,7 +1,6 @@
 ====================
  dataflake.fakeldap
 ====================
-
 This package offers a mock ``pyldap`` library that can be used 
 for testing code relying on ``pyldap`` without having to configure 
 and populate a real directory server.
@@ -9,14 +8,11 @@ and populate a real directory server.
 
 Documentation
 =============
-Full documentation for the last released version is at
-http://packages.python.org/dataflake.fakeldap. For 
-documentation matching the current SVN trunk please visit 
-http://docs.dataflake.org/dataflake.fakeldap.
+Full documentation is available at
+https://dataflakefakeldap.readthedocs.io/
 
 
 Bug tracker
 ===========
 A bug tracker is available at
-https://bugs.launchpad.net/dataflake.fakeldap
-
+https://github.com/dataflake/dataflake.fakeldap/issues

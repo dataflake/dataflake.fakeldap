@@ -18,18 +18,19 @@ from setuptools import setup
 
 
 _boundary = '\n' + ('-' * 60) + '\n\n'
-_dl = '\n\nDownload\n========'
+_dl = 'Download\n========'
 NAME = 'dataflake.fakeldap'
 
 
 def read(*rnames):
-    return open(os.path.join(os.path.dirname(__file__), *rnames)).read()
+    with open(os.path.join(os.path.dirname(__file__), *rnames)) as f:
+        return f.read()
 
 
 setup(name=NAME,
       version=read('version.txt').strip(),
-      description='LDAP connection library',
-      long_description=(read('README.txt') + _dl),
+      description='Mocked-up LDAP connection library',
+      long_description=(read('README.rst') + _boundary + _dl),
       classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
@@ -61,7 +62,7 @@ setup(name=NAME,
         ],
       tests_require=['pyldap'],
       test_suite='%s.tests' % NAME,
-      extras_require={'docs': ['sphinx', 'pkginfo', 'sphinx-pypi-upload',
-                               'zc.rst2'],
-                      'testing': ['nose', 'coverage']},
+      extras_require={
+        'docs': ['sphinx', 'repoze.sphinx.autointerface'],
+        },
       )

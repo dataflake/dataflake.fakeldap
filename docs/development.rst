@@ -2,38 +2,25 @@
  Development
 =============
 
+
 Getting the source code
 =======================
-The source code is maintained on GitHub at
+The source code is maintained on GitHub. To check out the trunk:
+
+.. code-block:: sh
+
+  $ git clone https://github.com/dataflake/dataflake.fakeldap.git
+
+You can also browse the code online at
 https://github.com/dataflake/dataflake.fakeldap
 
 
 Bug tracker
 ===========
 For bug reports, suggestions or questions please use the 
-issue tracker at https://github.com/dataflake/dataflake.fakeldap/issues.
+GitHub issue tracker at
+https://github.com/dataflake/dataflake.fakeldap/issues.
 
-
-Sharing Your Changes
-====================
-
-.. note::
-
-   Please ensure that all tests are passing before you submit your code.
-   If possible, your submission should include new tests for new features
-   or bug fixes, although it is possible that you may have tested your
-   new code by updating existing tests.
-
-If you got a read-only checkout from the Git repository, and you
-have made a change you would like to share, the best route is to let
-Git help you make a patch file:
-
-.. code-block:: sh
-
-   $ git diff > dataflake.fakeldap-cool_feature.patch
-
-You can then upload that patch file as an attachment to a Launchpad bug
-report.
 
 Running the tests in a ``virtualenv``
 =====================================
@@ -113,29 +100,9 @@ you can see how well the tests cover the code:
 
    OK
 
-Building the documentation in a ``virtualenv``
-==============================================
-
-:mod:`dataflake.fakeldap` uses the nifty :mod:`Sphinx` documentation system
-for building its docs.  Using the same virtualenv you set up to run the
-tests, you can build the docs:
-
-.. code-block:: sh
-
-   $ /tmp/virtualpy/bin/easy_install Sphinx pkginfo
-   ...
-   $ cd docs
-   $ PATH=/tmp/virtualpy/bin:$PATH make html
-   sphinx-build -b html -d _build/doctrees   . _build/html
-   ...
-   build succeeded.
-
-   Build finished. The HTML pages are in _build/html.
-
 
 Running the tests using  :mod:`zc.buildout`
 ===========================================
-
 :mod:`dataflake.fakeldap` ships with its own :file:`buildout.cfg` file and
 :file:`bootstrap.py` for setting up a development buildout:
 
@@ -164,7 +131,6 @@ Once you have a buildout, the tests can be run as follows:
 
 Building the documentation using :mod:`zc.buildout`
 ===================================================
-
 The :mod:`dataflake.fakeldap` buildout installs the Sphinx 
 scripts required to build the documentation, including testing 
 its code snippets:
@@ -181,7 +147,6 @@ its code snippets:
 
 Making a release
 ================
-
 These instructions assume that you have a development sandbox set 
 up using :mod:`zc.buildout` as the scripts used here are generated 
 by the buildout.
@@ -189,8 +154,7 @@ by the buildout.
 .. code-block:: sh
 
   $ bin/buildout -o
-  $ bin/python setup.py sdist bdist_wheel upload --sign
+  $ python setup.py sdist bdist_wheel upload --sign
 
 The ``bin/buildout`` step will make sure the correct package information 
 is used.
-
