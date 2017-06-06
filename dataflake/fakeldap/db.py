@@ -40,7 +40,7 @@ class DataStore(dict):
 
         Returns None if the path cannot be found
         """
-        if isinstance(dn, str):
+        if not isinstance(dn, list):
             elems = explode_dn(dn)
         else:
             elems = dn

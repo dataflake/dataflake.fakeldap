@@ -11,6 +11,8 @@
 #
 ##############################################################################
 
+import six
+
 
 class Filter(object):
     """ A simple representation for search filter elements
@@ -41,6 +43,9 @@ class Filter(object):
         res = []
         query_value = self.value[:]
         wildcard = False
+
+        if six.PY2 and isinstance(base, six.text_type):
+            base = base.encode('UTF-8')
 
         if query_value.startswith('*') or query_value.endswith('*'):
             if query_value != '*':

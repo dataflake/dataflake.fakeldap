@@ -25,10 +25,15 @@ def hash_pwd(pwd_str):
 
 
 def explode_dn(dn):
+    if isinstance(dn, six.text_type):
+        # DNs are expected to be UTF-8-encoded
+        dn = dn.encode('UTF-8')
+
     parts = []
     raw_parts = ldap.dn.explode_dn(dn)
     for part in raw_parts:
         if six.PY2 and isinstance(part, six.text_type):
             part = part.encode('UTF-8')
         parts.append(part)
+
     return parts
