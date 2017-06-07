@@ -3,6 +3,11 @@ Change log
 
 1.4 (unreleased)
 ----------------
+- drop Python 3.4 compatibility because it cannot deal with 
+  ``%s``-style text replacement in byte strings
+- switch to aggressive input checking to ensure all DN, RDN or 
+  attribute names are passed in as UTF-8-encoded strings. This 
+  reflects the :mod:`pyldap` module behavior.
 
 
 1.3 (2017-06-06)

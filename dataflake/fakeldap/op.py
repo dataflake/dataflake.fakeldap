@@ -11,6 +11,10 @@
 #
 ##############################################################################
 
+import six
+
+from dataflake.fakeldap.utils import from_utf8
+
 
 class Op(object):
     """ A simple representation for operators like !, &, |
@@ -22,4 +26,7 @@ class Op(object):
         self.op = op
 
     def __repr__(self):
-        return "Op('%s')" % self.op
+        if six.PY2:
+            return "Op('%s')" % self.op
+        else:
+            return "Op('%s')" % from_utf8(self.op)

@@ -15,14 +15,16 @@
 
 import unittest
 
+from dataflake.fakeldap.utils import to_utf8
+
 
 class FakeLDAPTests(unittest.TestCase):
 
     def setUp(self):
         from dataflake.fakeldap import TREE
         self.db = TREE
-        self.db.addTreeItems('ou=users,dc=localhost')
-        self.db.addTreeItems('ou=groups,dc=localhost')
+        self.db.addTreeItems(b'ou=users,dc=localhost')
+        self.db.addTreeItems(b'ou=groups,dc=localhost')
 
     def tearDown(self):
         self.db.clear()
@@ -38,7 +40,8 @@ class FakeLDAPTests(unittest.TestCase):
     def _addUser(self, name, mail=None):
         from dataflake.fakeldap.utils import hash_pwd
         conn = self._makeOne()
-        user_dn = 'cn=%s,ou=users,dc=localhost' % name
+        utf8_name = to_utf8(name)
+        user_dn = b'cn=%s,ou=users,dc=localhost' % utf8_name
         user_pwd = '%s_secret' % name
 
         if conn.hash_password:
@@ -46,21 +49,23 @@ class FakeLDAPTests(unittest.TestCase):
         else:
             pwd = user_pwd
 
-        user = [('cn', [name]), ('userPassword', [pwd]),
-                ('objectClass', ['top', 'person'])]
+        user = [(b'cn', [utf8_name]), (b'userPassword', [pwd]),
+                (b'objectClass', [b'top', b'person'])]
         if mail is not None:
-            user.append(('mail', [mail]))
+            user.append((b'mail', [to_utf8(mail)]))
 
         conn.add_s(user_dn, user)
         return (user_dn, user_pwd)
 
     def _addGroup(self, name, members=None):
+        name = to_utf8(name)
         conn = self._makeOne()
-        group_dn = 'cn=%s,ou=groups,dc=localhost' % name
+        group_dn = b'cn=%s,ou=groups,dc=localhost' % name
 
-        group = [('cn', [name]), ('objectClass', ['top', 'group'])]
+        group = [(b'cn', [name]), (b'objectClass', [b'top', b'group'])]
         if members is not None:
-            members = ['cn=%s,ou=users,dc=localhost' % x for x in members]
+            members = [b'cn=%s,ou=users,dc=localhost' % to_utf8(x)
+                       for x in members]
             group.append((conn.member_attr, members))
 
         conn.add_s(group_dn, group)

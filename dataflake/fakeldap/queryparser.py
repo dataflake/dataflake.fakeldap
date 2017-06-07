@@ -16,6 +16,7 @@ import re
 
 from dataflake.fakeldap.op import Op
 from dataflake.fakeldap.queryfilter import Filter
+from dataflake.fakeldap.utils import utf8_string
 
 # From http://www.ietf.org/rfc/rfc2254.txt, Section 4
 #
@@ -44,22 +45,25 @@ from dataflake.fakeldap.queryfilter import Filter
 # value      = AttributeValue from Section 4.1.6 of [1]
 
 
-_FLTR = r'\(\w*?=[\*\w\s=,\\]*?\)'
-_OP = '[&\|\!]{1}'
+_FLTR = br'\(\w*?=[\*\w\s=,\\]*?\)'
+_OP = b'[&\|\!]{1}'
 
-FLTR = (r'\((?P<attr>\w*?)(?P<comp>=)' +
-        '(?P<value>[\*\w\s=,\\\'@\-\+_\.øØæÆåÅäÄöÖüÜß]*?)\)')
-FLTR_RE = re.compile(FLTR + '(?P<fltr>.*)')
+FLTR = (br'\((?P<attr>\w*?)(?P<comp>=)' +
+        br'(?P<value>[\*\w\s=,\\\'@\-\+_\.' +
+        br'\xc3\xb8\xc3\x98\xc3\xa6\xc3\x86\xc3\xa5\xc3\x85\xc3' +
+        br'\xa4\xc3\x84\xc3\xb6\xc3\x96\xc3\xbc\xc3\x9c\xc3\x9f]*?)\)')
+FLTR_RE = re.compile(FLTR + b'(?P<fltr>.*)')
 
-FULL = '\((?P<op>(%s))(?P<fltr>.*)\)' % _OP
+FULL = b'\((?P<op>(%s))(?P<fltr>.*)\)' % _OP
 FULL_RE = re.compile(FULL)
 
-OP = '\((?P<op>(%s))(?P<fltr>(%s)*)\)' % (_OP, _FLTR)
+OP = b'\((?P<op>(%s))(?P<fltr>(%s)*)\)' % (_OP, _FLTR)
 OP_RE = re.compile(OP)
 
 
 class Parser(object):
 
+    @utf8_string('query')
     def parse_query(self, query, recurse=False):
         """ Parse a query string into a series of Ops and Filters
         """
@@ -118,7 +122,7 @@ class Parser(object):
         level = dig(query, res)
         if not res:
             # A simple filter with no operands
-            return ((Op('&'), level),)
+            return ((Op(b'&'), level),)
         if level:
             # Very likely a single operand around a group of filters.
             assert len(level) == 1, (len(level), level)

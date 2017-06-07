@@ -44,4 +44,4 @@ class FakeLDAPBasicTests(FakeLDAPTests):
         conn = self._makeOne()
         self.assertEqual(conn.result(),
                          ('partial',
-                          [('partial result', {'dn': 'partial result'})]))
+                          [('partial result', {b'dn': b'partial result'})]))

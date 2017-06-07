@@ -12,7 +12,9 @@
 ##############################################################################
 
 from base64 import b64encode
+import functools
 from hashlib import sha1 as sha_new
+import inspect
 import ldap.dn
 import six
 
@@ -32,8 +34,49 @@ def explode_dn(dn):
     parts = []
     raw_parts = ldap.dn.explode_dn(dn)
     for part in raw_parts:
-        if six.PY2 and isinstance(part, six.text_type):
+        if isinstance(part, six.text_type):
             part = part.encode('UTF-8')
         parts.append(part)
 
     return parts
+
+
+def to_utf8(to_convert):
+    if not isinstance(to_convert, six.binary_type):
+        to_convert = to_convert.encode('UTF-8')
+    return to_convert
+
+
+def from_utf8(to_convert):
+    if isinstance(to_convert, six.binary_type):
+        to_convert = to_convert.decode('UTF-8')
+    return to_convert
+
+
+def utf8_string(*tested):
+    """ Decorator function to check one or more function arguments
+    """
+
+    def _check_utf8_string(called_function):
+        spec = inspect.getargspec(called_function)
+        test_indices = [(x, spec[0].index(x)) for x in tested if x in spec[0]]
+
+        @functools.wraps(called_function)
+        def _check(*args, **kw):
+            for arg_name, arg_index in test_indices:
+                if arg_name in kw:
+                    arg_val = kw.get(arg_name)
+                else:
+                    arg_val = args[arg_index]
+
+                if not isinstance(arg_val, six.binary_type):
+                    msg = 'Parameter %s must be UTF-8, found %s (%s)'
+                    raise TypeError(msg % (arg_name,
+                                           str(arg_val),
+                                           type(arg_val)))
+
+            return called_function(*args, **kw)
+
+        return _check
+
+    return _check_utf8_string

@@ -20,9 +20,10 @@ from dataflake.fakeldap.db import DataStore
 from dataflake.fakeldap.queryparser import Parser
 from dataflake.fakeldap.utils import explode_dn
 from dataflake.fakeldap.utils import hash_pwd
+from dataflake.fakeldap.utils import utf8_string
 
 PARSER = Parser()
-ANY = PARSER.parse_query('(objectClass=*)')
+ANY = PARSER.parse_query(b'(objectClass=*)')
 TREE = DataStore()
 
 
@@ -30,8 +31,8 @@ class FakeLDAPConnection:
 
     hash_password = True
     maintain_memberof = False
-    member_attr = 'member'
-    memberof_attr = 'memberOf'
+    member_attr = b'member'
+    memberof_attr = b'memberOf'
 
     def __init__(self, *args, **kw):
         self.args = args
@@ -44,10 +45,11 @@ class FakeLDAPConnection:
     def set_option(self, option, value):
         self.options[option] = value
 
+    @utf8_string('binduid')
     def simple_bind_s(self, binduid, bindpwd):
         self._last_bind = (self.simple_bind_s, (binduid, bindpwd), {})
 
-        if 'Manager' in binduid:
+        if b'Manager' in binduid:
             return 1
 
         if bindpwd == '':
@@ -58,9 +60,9 @@ class FakeLDAPConnection:
             bindpwd = hash_pwd(bindpwd)
 
         rec = self.search_s(binduid, scope=ldap.SCOPE_BASE,
-                            attrs=('userPassword',))
+                            query=b'(objectClass=*)', attrs=(b'userPassword',))
 
-        rec_pwd = rec[0][1].get('userPassword')
+        rec_pwd = rec[0][1].get(b'userPassword')
 
         if not rec_pwd:
             raise ldap.INVALID_CREDENTIALS
@@ -75,8 +77,9 @@ class FakeLDAPConnection:
             return entry
         return dict((k, v) for k, v in entry.items() if k in attrs)
 
+    @utf8_string('base', 'query')
     def search_s(self, base, scope=ldap.SCOPE_SUBTREE,
-                 query='(objectClass=*)', attrs=()):
+                 query=b'(objectClass=*)', attrs=()):
 
         parsed_query = self.parser.parse_query(query)
         tree_pos = TREE.getElementByDN(base)
@@ -108,7 +111,7 @@ class FakeLDAPConnection:
                 # the first empty value, but still set the empty
                 # value on by_filter so it gets caught in the
                 # operations below.
-                if not sub and operation.op in ('&',):
+                if not sub and operation.op in (b'&',):
                     break
 
             if filters:
@@ -118,7 +121,7 @@ class FakeLDAPConnection:
                 # all the previous levels.
                 values = by_level.values()
 
-            if operation.op in ('|',):
+            if operation.op in (b'|',):
                 # Do an union
                 lvl_vals = dict(lvl)
                 lvl_keys = set(lvl_vals.keys())
@@ -128,7 +131,7 @@ class FakeLDAPConnection:
                     for k in sub_keys - lvl_keys:
                         lvl.append((k, sub_vals[k]))
                     lvl_keys = sub_keys | lvl_keys
-            elif operation.op in ('&',):
+            elif operation.op in (b'&',):
                 # Do an intersection
                 for sub in values:
                     # Optimization: If it's an AND query bail out on
@@ -154,6 +157,7 @@ class FakeLDAPConnection:
 
         return []
 
+    @utf8_string('dn')
     def add_s(self, dn, attr_list):
         elems = explode_dn(dn)
         rdn = elems[0]
@@ -163,7 +167,7 @@ class FakeLDAPConnection:
             raise ldap.ALREADY_EXISTS(rdn)
 
         # Add rdn to attributes as well.
-        rdn_key, rdn_value = rdn.split('=')
+        rdn_key, rdn_value = rdn.split(b'=')
         tree_pos[rdn] = {rdn_key: [rdn_value]}
         record = tree_pos[rdn]
 
@@ -179,6 +183,7 @@ class FakeLDAPConnection:
                                         self.memberof_attr,
                                         [dn])])
 
+    @utf8_string('dn')
     def delete_s(self, dn):
         elems = explode_dn(dn)
         rdn = elems[0]
@@ -203,6 +208,7 @@ class FakeLDAPConnection:
 
         del tree_pos[rdn]
 
+    @utf8_string('dn')
     def modify_s(self, dn, mod_list):
         elems = explode_dn(dn)
         rdn = elems[0]
@@ -251,6 +257,7 @@ class FakeLDAPConnection:
                                             self.memberof_attr,
                                             [dn])])
 
+    @utf8_string('dn', 'new_rdn')
     def modrdn_s(self, dn, new_rdn, *ign):
         elems = explode_dn(dn)
         rdn = elems[0]
@@ -271,7 +278,7 @@ class FakeLDAPConnection:
         self.start_tls_called = True
 
     def result(self, msgid=ldap.RES_ANY, all=1, timeout=-1):
-        return ('partial', [('partial result', {'dn': 'partial result'})])
+        return ('partial', [('partial result', {b'dn': b'partial result'})])
 
     def unbind(self):
         self.unbind_s()
@@ -310,7 +317,7 @@ class FixedResultFakeLDAPConnection(FakeLDAPConnection):
     search_results = []
 
     def search_s(self, base, scope=ldap.SCOPE_SUBTREE,
-                 query='(objectClass=*)', attrs=()):
+                 query=b'(objectClass=*)', attrs=()):
         return self.search_results
 
 

@@ -13,6 +13,8 @@
 
 import six
 
+from dataflake.fakeldap.utils import from_utf8
+
 
 class Filter(object):
     """ A simple representation for search filter elements
@@ -24,7 +26,13 @@ class Filter(object):
         self.value = value.strip()
 
     def __repr__(self):
-        return "Filter('%s', '%s', '%s')" % (self.attr, self.comp, self.value)
+        repr_template = "Filter('%s', '%s', '%s')"
+        if six.PY2:
+            return repr_template % (self.attr, self.comp, self.value)
+        else:
+            return repr_template % (from_utf8(self.attr),
+                                    from_utf8(self.comp),
+                                    from_utf8(self.value))
 
     def __eq__(self, other):
         v1 = (self.attr.lower(), self.comp, self.value)
@@ -47,16 +55,16 @@ class Filter(object):
         if six.PY2 and isinstance(base, six.text_type):
             base = base.encode('UTF-8')
 
-        if query_value.startswith('*') or query_value.endswith('*'):
-            if query_value != '*':
+        if query_value.startswith(b'*') or query_value.endswith(b'*'):
+            if query_value != b'*':
                 # Wildcard search
-                if query_value.startswith('*') and query_value.endswith('*'):
+                if query_value.startswith(b'*') and query_value.endswith(b'*'):
                     wildcard = 'both'
                     query_value = query_value[1:-1]
-                elif query_value.startswith('*'):
+                elif query_value.startswith(b'*'):
                     wildcard = 'start'
                     query_value = query_value[1:]
-                elif query_value.endswith('*'):
+                elif query_value.endswith(b'*'):
                     wildcard = 'end'
                     query_value = query_value[:-1]
 
@@ -64,7 +72,7 @@ class Filter(object):
             found = True
 
             if self.attr in record:
-                if query_value == '*':
+                if query_value == b'*':
                     # Always include if there's a value for it.
                     pass
                 elif wildcard:
@@ -89,7 +97,7 @@ class Filter(object):
                     if base.startswith(rdn):
                         dn = base
                     else:
-                        dn = '%s,%s' % (rdn, base)
+                        dn = b'%s,%s' % (rdn, base)
                     res.append((dn, record))
 
         return res
