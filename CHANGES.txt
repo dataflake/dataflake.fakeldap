@@ -1,7 +1,7 @@
 Change log
 ==========
 
-2.0 (unreleased)
+2.0 (2017-08-17)
 ----------------
 - drop Python 3.4 compatibility because it cannot deal with 
   ``%s``-style text replacement in byte strings
