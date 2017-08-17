@@ -57,6 +57,7 @@ setup(name=NAME,
       zip_safe=False,
       install_requires=[
         'setuptools',
+        'six',
         'pyldap',
         ],
       tests_require=['pyldap'],
