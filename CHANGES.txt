@@ -1,6 +1,10 @@
 Change log
 ==========
 
+2.1 (unreleased)
+----------------
+
+
 2.0 (2017-08-17)
 ----------------
 - drop Python 3.4 compatibility because it cannot deal with 
