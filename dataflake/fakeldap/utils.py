@@ -23,7 +23,7 @@ def hash_pwd(pwd_str):
     if isinstance(pwd_str, six.text_type):
         pwd_str = pwd_str.encode('utf-8')
     sha_digest = sha_new(pwd_str).digest()
-    return '{SHA}%s' % b64encode(sha_digest).strip()
+    return b'{SHA}%s' % b64encode(sha_digest).strip()
 
 
 def explode_dn(dn):

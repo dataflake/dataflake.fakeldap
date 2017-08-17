@@ -52,7 +52,7 @@ class FakeLDAPConnection:
         if b'Manager' in binduid:
             return 1
 
-        if bindpwd == '':
+        if bindpwd in (b'', ''):
             # Emulate LDAP mis-behavior
             return 1
 
