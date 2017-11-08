@@ -1,3 +1,4 @@
+# -*- coding: latin-1 -*-
 ##############################################################################
 #
 # Copyright (c) 2012 Jens Vagelpohl and Contributors. All Rights Reserved.
@@ -30,6 +31,13 @@ class ParserTests(unittest.TestCase):
         query = b'(cn=jhunter*)'
         parsed = parser.parse_query(query)
         self.assertEqual(repr(parsed), "(Filter('cn', '=', 'jhunter*'),)")
+
+    def test_parse_unicode(self):
+        parser = self._makeOne()
+
+        query = b'(cn=柳*)'
+        parsed = parser.parse_query(query)
+        self.assertEqual(repr(parsed), "(Filter('cn', '=', '\xe6\x9f\xb3*'),)")
 
     def test_parse_chained(self):
         parser = self._makeOne()
