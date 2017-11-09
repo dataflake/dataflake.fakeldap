@@ -1,4 +1,3 @@
-# -*- coding: latin-1 -*-
 ##############################################################################
 #
 # Copyright (c) 2012 Jens Vagelpohl and Contributors. All Rights Reserved.
@@ -13,6 +12,7 @@
 ##############################################################################
 
 import unittest
+from six import string_types
 
 
 class ParserTests(unittest.TestCase):
@@ -35,9 +35,13 @@ class ParserTests(unittest.TestCase):
     def test_parse_unicode(self):
         parser = self._makeOne()
 
-        query = b'(cn=柳*)'
+        query = b'(cn=\xe6\x9f\xb3*)'
         parsed = parser.parse_query(query)
-        self.assertEqual(repr(parsed), "(Filter('cn', '=', '\xe6\x9f\xb3*'),)")
+        expected = b"(Filter('cn', '=', '\xe6\x9f\xb3*'),)"
+        # detect py2 <type 'str'> vs py3 <class 'bytes'>
+        if not isinstance(query, string_types):
+            expected = expected.decode()
+        self.assertEqual(repr(parsed), expected)
 
     def test_parse_chained(self):
         parser = self._makeOne()
