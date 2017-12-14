@@ -13,6 +13,8 @@
 
 import unittest
 
+import six
+
 
 class ParserTests(unittest.TestCase):
 
@@ -30,6 +32,19 @@ class ParserTests(unittest.TestCase):
         query = b'(cn=jhunter*)'
         parsed = parser.parse_query(query)
         self.assertEqual(repr(parsed), "(Filter('cn', '=', 'jhunter*'),)")
+
+    def test_parse_utf8(self):
+        parser = self._makeOne()
+
+        query = b'(cn=\xe6\x9f\xb3*)'
+        parsed = parser.parse_query(query)
+        expected = b"(Filter('cn', '=', '\xe6\x9f\xb3*'),)"
+
+        # Under Python 3, __repr__ for the Filter class will return a
+        # <str>, so we need to decode the expected result to match.
+        if six.PY3:
+            expected = expected.decode('UTF-8')
+        self.assertEqual(repr(parsed), expected)
 
     def test_parse_chained(self):
         parser = self._makeOne()

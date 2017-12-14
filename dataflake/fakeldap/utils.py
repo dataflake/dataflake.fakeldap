@@ -66,8 +66,10 @@ def utf8_string(*tested):
             for arg_name, arg_index in test_indices:
                 if arg_name in kw:
                     arg_val = kw.get(arg_name)
-                else:
+                elif arg_index < len(args):
                     arg_val = args[arg_index]
+                else:
+                    continue  # fallback to default arguments
 
                 if not isinstance(arg_val, six.binary_type):
                     msg = 'Parameter %s must be UTF-8, found %s (%s)'
