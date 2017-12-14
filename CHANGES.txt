@@ -5,6 +5,8 @@ Change log
 ----------------
 - The query filter parsing now allows non-ASCII values to be passed
   [majuscule]
+- Expand the allowed characters for query parsing from a hardcoded list
+  [adparvum]
 
 
 2.0 (2017-08-17)

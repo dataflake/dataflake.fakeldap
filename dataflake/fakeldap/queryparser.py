@@ -52,9 +52,7 @@ _FLTR = br'\(\w*?=[\*\w\s=,\\]*?\)'
 _OP = b'[&\|\!]{1}'
 
 FLTR = (br'\((?P<attr>\w*?)(?P<comp>=)' +
-        br'(?P<value>[\*\w\s=,\\\'@\-\+_\.' +
-        br'\xc3\xb8\xc3\x98\xc3\xa6\xc3\x86\xc3\xa5\xc3\x85\xc3' +
-        br'\xa4\xc3\x84\xc3\xb6\xc3\x96\xc3\xbc\xc3\x9c\xc3\x9f]*?)\)' +
+        br'(?P<value>[\*\w\s=,\\\'@\-\+_\.^\W\d_]*?)\)' +
         b'(?P<fltr>.*)')
 FLTR_RE = re.compile(FLTR.decode(), re.UNICODE)
 
