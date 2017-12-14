@@ -69,7 +69,7 @@ def utf8_string(*tested):
                 elif arg_index < len(args):
                     arg_val = args[arg_index]
                 else:
-                    continue # fallback to default arguments
+                    continue  # fallback to default arguments
 
                 if not isinstance(arg_val, six.binary_type):
                     msg = 'Parameter %s must be UTF-8, found %s (%s)'
