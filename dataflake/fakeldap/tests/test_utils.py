@@ -29,3 +29,13 @@ class HashPwdTests(unittest.TestCase):
         pwd = hash_pwd(u'bjørn')
         self.assertTrue(isinstance(pwd, six.binary_type))
         self.assertTrue(pwd.startswith(b'{SHA}'))
+
+
+class ConstraintUtilTests(unittest.TestCase):
+
+    def test_to_utf8(self):
+        from dataflake.fakeldap.utils import utf8_string
+        @utf8_string('test')
+        def _fn_with_opt_args(test='string'):
+            return True
+        self.assertTrue(_fn_with_opt_args())
