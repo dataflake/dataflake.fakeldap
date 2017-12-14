@@ -14,6 +14,8 @@
 
 import re
 
+import six
+
 from dataflake.fakeldap.op import Op
 from dataflake.fakeldap.queryfilter import Filter
 from dataflake.fakeldap.utils import utf8_string
@@ -51,8 +53,9 @@ _OP = b'[&\|\!]{1}'
 FLTR = (br'\((?P<attr>\w*?)(?P<comp>=)' +
         br'(?P<value>[\*\w\s=,\\\'@\-\+_\.' +
         br'\xc3\xb8\xc3\x98\xc3\xa6\xc3\x86\xc3\xa5\xc3\x85\xc3' +
-        br'\xa4\xc3\x84\xc3\xb6\xc3\x96\xc3\xbc\xc3\x9c\xc3\x9f]*?)\)')
-FLTR_RE = re.compile(FLTR + b'(?P<fltr>.*)')
+        br'\xa4\xc3\x84\xc3\xb6\xc3\x96\xc3\xbc\xc3\x9c\xc3\x9f]*?)\)' +
+        b'(?P<fltr>.*)')
+FLTR_RE = re.compile(FLTR.decode(), re.UNICODE)
 
 FULL = b'\((?P<op>(%s))(?P<fltr>.*)\)' % _OP
 FULL_RE = re.compile(FULL)
@@ -85,8 +88,20 @@ class Parser(object):
                     parts.extend(self.parse_query(rest))
                 return tuple(parts)
 
+        # Under Python 3, our regular expression is type <str>, which
+        # does not handle <bytes>. Doing a temporary decode.
+        decode_needed = six.PY3 and isinstance(query, bytes)
+        if decode_needed:
+            query = query.decode('UTF-8')
+
         # Match internal filter.
         d = FLTR_RE.match(query).groupdict()
+
+        # Revert the previous temporary decode
+        if decode_needed:
+            for k, v in d.items():
+                d[k] = v.encode('UTF-8')
+
         parts.append(Filter(d['attr'], d['comp'], d['value']))
         if d['fltr']:
             parts.extend(self.parse_query(d['fltr'], recurse=True))

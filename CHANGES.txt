@@ -3,6 +3,8 @@ Change log
 
 2.1 (unreleased)
 ----------------
+- The query filter parsing now allows non-ASCII values to be passed
+  [majuscule]
 
 
 2.0 (2017-08-17)
