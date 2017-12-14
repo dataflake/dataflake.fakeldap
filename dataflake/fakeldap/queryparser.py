@@ -21,6 +21,7 @@ from dataflake.fakeldap.queryfilter import Filter
 from dataflake.fakeldap.utils import utf8_string
 
 # From http://www.ietf.org/rfc/rfc2254.txt, Section 4
+# with references to http://www.ietf.org/rfc/rfc2251.txt
 #
 # filter     = "(" filtercomp ")"
 # filtercomp = and / or / not / item
@@ -42,9 +43,9 @@ from dataflake.fakeldap.utils import utf8_string
 # initial    = value
 # any        = "*" *(value "*")
 # final      = value
-# attr       = AttributeDescription from Section 4.1.5 of [1]
-# matchingrule = MatchingRuleId from Section 4.1.9 of [1]
-# value      = AttributeValue from Section 4.1.6 of [1]
+# attr       = AttributeDescription from Section 4.1.5 of RFC 2251
+# matchingrule = MatchingRuleId from Section 4.1.9 of RFC 2251
+# value      = AttributeValue from Section 4.1.6 of RFC 2251
 
 
 _FLTR = br'\(\w*?=[\*\w\s=,\\]*?\)'
