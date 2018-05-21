@@ -1,7 +1,7 @@
 Change log
 ==========
 
-2.2 (unreleased)
+2.2 (2018-05-21)
 ----------------
 - move back to ``python-ldap`` from ``pyldap``, the code has been merged.
 - fix last DeprecationWarning
