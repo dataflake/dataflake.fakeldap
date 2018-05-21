@@ -3,6 +3,7 @@ Change log
 
 2.2 (unreleased)
 ----------------
+- move back to ``python-ldap`` from ``pyldap``, the code has been merged.
 
 
 2.1 (2017-12-14)

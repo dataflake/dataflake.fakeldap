@@ -56,9 +56,9 @@ setup(name=NAME,
       install_requires=[
         'setuptools',
         'six',
-        'pyldap',
+        'python-ldap',
         ],
-      tests_require=['pyldap'],
+      tests_require=['python-ldap'],
       test_suite='%s.tests' % NAME,
       extras_require={
         'docs': ['sphinx', 'repoze.sphinx.autointerface'],
