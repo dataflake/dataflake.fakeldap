@@ -58,7 +58,10 @@ def utf8_string(*tested):
     """
 
     def _check_utf8_string(called_function):
-        spec = inspect.getargspec(called_function)
+        if six.PY2:
+            spec = inspect.getargspec(called_function)
+        else:
+            spec = inspect.getfullargspec(called_function)
         test_indices = [(x, spec[0].index(x)) for x in tested if x in spec[0]]
 
         @functools.wraps(called_function)
