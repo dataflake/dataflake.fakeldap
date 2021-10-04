@@ -73,7 +73,7 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         # Note: searches for all results and not scope BASE will return
         # RDNs instead of full DNs
         self.assertEqual(set(dn_values),
-                         set([b'cn=foo', b'cn=bar', b'cn=baz']))
+                         {b'cn=foo', b'cn=bar', b'cn=baz'})
 
     def test_search_nonspecific_scope_base(self):
         import ldap
@@ -107,9 +107,9 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 3)
         self.assertEqual(set(dn_values),
-                         set([b'cn=foo,ou=users,dc=localhost',
+                         {b'cn=foo,ou=users,dc=localhost',
                               b'cn=footwo,ou=users,dc=localhost',
-                              b'cn=threefoo,ou=users,dc=localhost']))
+                              b'cn=threefoo,ou=users,dc=localhost'})
 
     def test_search_startswithendswith_wildcard(self):
         conn = self._makeOne()
@@ -122,9 +122,9 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 3)
         self.assertEqual(set(dn_values),
-                         set([b'cn=foo,ou=users,dc=localhost',
+                         {b'cn=foo,ou=users,dc=localhost',
                               b'cn=onefootwo,ou=users,dc=localhost',
-                              b'cn=threefoo,ou=users,dc=localhost']))
+                              b'cn=threefoo,ou=users,dc=localhost'})
 
     def test_search_endswith_wildcard(self):
         conn = self._makeOne()
@@ -136,8 +136,8 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 2)
         self.assertEqual(set(dn_values),
-                         set([b'cn=foo,ou=users,dc=localhost',
-                              b'cn=threefoo,ou=users,dc=localhost']))
+                         {b'cn=foo,ou=users,dc=localhost',
+                              b'cn=threefoo,ou=users,dc=localhost'})
 
     def test_search_startswith_wildcard(self):
         conn = self._makeOne()
@@ -149,8 +149,8 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 2)
         self.assertEqual(set(dn_values),
-                         set([b'cn=foo,ou=users,dc=localhost',
-                              b'cn=footwo,ou=users,dc=localhost']))
+                         {b'cn=foo,ou=users,dc=localhost',
+                              b'cn=footwo,ou=users,dc=localhost'})
 
     def test_search_anded_filter(self):
         conn = self._makeOne()
@@ -179,8 +179,8 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 2)
         self.assertEqual(set(dn_values),
-                         set([b'cn=foo,ou=users,dc=localhost',
-                              b'cn=bar,ou=users,dc=localhost']))
+                         {b'cn=foo,ou=users,dc=localhost',
+                              b'cn=bar,ou=users,dc=localhost'})
 
     def test_search_invalid_base(self):
         import ldap
@@ -200,13 +200,13 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 2)
         self.assertEqual(set(dn_values),
-                         set([b'cn=foo,ou=users,dc=localhost',
-                              b'cn=bar,ou=users,dc=localhost']))
+                         {b'cn=foo,ou=users,dc=localhost',
+                              b'cn=bar,ou=users,dc=localhost'})
 
     def test_search_by_utf8(self):
         conn = self._makeOne()
-        utf8_foo = to_utf8(u'f\xf8\xf8')
-        utf8_bar = to_utf8(u'b\xe5r')
+        utf8_foo = to_utf8('f\xf8\xf8')
+        utf8_bar = to_utf8('b\xe5r')
         self._addUser(utf8_foo)
         self._addUser(utf8_bar)
         self._addUser('baz')
@@ -216,8 +216,8 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 2)
         self.assertEqual(set(dn_values),
-                         set([b'cn=%s,ou=users,dc=localhost' % utf8_foo,
-                              b'cn=%s,ou=users,dc=localhost' % utf8_bar]))
+                         {b'cn=%s,ou=users,dc=localhost' % utf8_foo,
+                              b'cn=%s,ou=users,dc=localhost' % utf8_bar})
 
     def test_return_all_attributes(self):
         conn = self._makeOne()

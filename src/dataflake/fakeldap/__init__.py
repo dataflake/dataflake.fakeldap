@@ -75,7 +75,7 @@ class FakeLDAPConnection:
     def _filter_attrs(self, entry, attrs):
         if not attrs:
             return entry
-        return dict((k, v) for k, v in entry.items() if k in attrs)
+        return {k: v for k, v in entry.items() if k in attrs}
 
     @utf8_string('base', 'query')
     def search_s(self, base, scope=ldap.SCOPE_SUBTREE,

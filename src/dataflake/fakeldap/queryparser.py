@@ -60,7 +60,7 @@ OP = br'\((?P<op>(%s))(?P<fltr>(%s)*)\)' % (_OP, _FLTR)
 OP_RE = re.compile(OP)
 
 
-class Parser(object):
+class Parser:
 
     @utf8_string('query')
     def parse_query(self, query, recurse=False):

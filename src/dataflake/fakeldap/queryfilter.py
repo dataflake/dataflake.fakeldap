@@ -14,7 +14,7 @@
 from .utils import from_utf8
 
 
-class Filter(object):
+class Filter:
     """ A simple representation for search filter elements
     """
 

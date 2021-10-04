@@ -80,7 +80,7 @@ class FakeLDAPModifyTests(FakeLDAPTests):
         conn.modify_s(b'cn=foo,ou=users,dc=localhost', modlist)
         foo = conn.search_s(b'ou=users,dc=localhost', query=b'(cn=foo)')
         self.assertEqual(set(foo[0][1][b'mail']),
-                         set([b'foo@email.com', b'foo@bar.com']))
+                         {b'foo@email.com', b'foo@bar.com'})
 
     def test_modrdn_wrongbase(self):
         import ldap

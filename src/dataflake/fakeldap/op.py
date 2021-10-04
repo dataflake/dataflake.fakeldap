@@ -14,7 +14,7 @@
 from .utils import from_utf8
 
 
-class Op(object):
+class Op:
     """ A simple representation for operators like !, &, |
 
     Operators chain or qualify a set of LDAP search filters

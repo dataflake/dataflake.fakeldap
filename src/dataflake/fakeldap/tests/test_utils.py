@@ -24,7 +24,7 @@ class HashPwdTests(unittest.TestCase):
 
     def test_hash_unicode_pwd(self):
         from ..utils import hash_pwd
-        pwd = hash_pwd(u'bj\xf8rn')
+        pwd = hash_pwd('bj\xf8rn')
         self.assertTrue(isinstance(pwd, bytes))
         self.assertTrue(pwd.startswith(b'{SHA}'))
 
