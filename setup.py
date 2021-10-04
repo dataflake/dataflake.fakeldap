@@ -73,6 +73,9 @@ setup(name=NAME,
       tests_require=['python-ldap'],
       test_suite='%s.tests' % NAME,
       extras_require={
-        'docs': ['sphinx', 'repoze.sphinx.autointerface'],
+        'docs': ['Sphinx',
+                 'repoze.sphinx.autointerface',
+                 'sphinx_rtd_theme',
+                 ],
         },
       )
