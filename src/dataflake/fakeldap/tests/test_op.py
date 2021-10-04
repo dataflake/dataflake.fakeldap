@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2012 Jens Vagelpohl and Contributors. All Rights Reserved.
+# Copyright (c) 2012-2021 Jens Vagelpohl and Contributors. All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -17,7 +17,7 @@ import unittest
 class OpTests(unittest.TestCase):
 
     def _getTargetClass(self):
-        from dataflake.fakeldap.op import Op
+        from ..op import Op
         return Op
 
     def _makeOne(self, operator_repr):

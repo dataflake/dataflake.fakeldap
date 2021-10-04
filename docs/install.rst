@@ -14,14 +14,7 @@ After you've got the requisite dependencies installed, you may install
 :mod:`dataflake.fakeldap` into your Python environment using the 
 following command::
 
-  $ easy_install dataflake.fakeldap
-
-or::
-
   $ pip install dataflake.fakeldap
 
 If you use :mod:`zc.buildout` you can add :mod:`dataflake.fakeldap`
 to the necessary ``eggs`` section to have it pulled in automatically.
-
-When you ``easy_install``  or ``pip`` :mod:`dataflake.fakeldap`, the
-:term:`pyldap` libraries are installed if they are not present.

@@ -7,7 +7,7 @@ Getting the source code
 =======================
 The source code is maintained on GitHub. To check out the trunk:
 
-.. code-block:: sh
+.. code-block:: console
 
   $ git clone https://github.com/dataflake/dataflake.fakeldap.git
 
@@ -22,101 +22,25 @@ GitHub issue tracker at
 https://github.com/dataflake/dataflake.fakeldap/issues.
 
 
-Running the tests in a ``virtualenv``
-=====================================
-If you use the ``virtualenv`` package to create lightweight Python
-development environments, you can run the tests using nothing more
-than the ``python`` binary in a virtualenv.  First, create a scratch
-environment:
+Running the tests
+=================
+:mod:`dataflake.fakeldap` ships with its own :file:`buildout.cfg` buildout
+configuration file. The buildout procedure will set up all requirements
+for running the unit tests and building the documentation.
 
-.. code-block:: sh
+.. code-block:: console
 
-   $ /path/to/virtualenv --no-site-packages /tmp/virtualpy
-
-Next, get this package registered as a "development egg" in the
-environment:
-
-.. code-block:: sh
-
-   $ /tmp/virtualpy/bin/python setup.py develop
-
-Finally, run the tests using the build-in ``setuptools`` testrunner:
-
-.. code-block:: sh
-
-   $ /tmp/virtualpy/bin/python setup.py test
-   running test
-   ...
-   test_search_startswithendswith_wildcard (dataflake.fakeldap.tests.test_fakeldap_search.FakeLDAPSearchTests) ... ok
-   
-   ----------------------------------------------------------------------
-   Ran 56 tests in 0.033
-   
-   OK
-
-If you have the :mod:`nose` package installed in the virtualenv, you can
-use its testrunner too:
-
-.. code-block:: sh
-
-   $ /tmp/virtualpy/bin/easy_install nose
-   ...
-   $ /tmp/virtualpy/bin/python setup.py nosetests
-   running nosetests
-   ....................................................
-   ----------------------------------------------------------------------
-   Ran 57 tests in 0.049s
-
-   OK
-
-or:
-
-.. code-block:: sh
-
-   $ /tmp/virtualpy/bin/nosetests
-   .....................................................
-   ----------------------------------------------------------------------
-   Ran 63 tests in 0.072s
-
-   OK
-
-If you have the :mod:`coverage` package installed in the virtualenv,
-you can see how well the tests cover the code:
-
-.. code-block:: sh
-
-   $ /tmp/virtualpy/bin/easy_install nose coverage
-   ...
-   $ /tmp/virtualpy/bin/python setup.py nosetests \
-       --with-coverage --cover-package=dataflake.fakeldap
-   running nosetests
-   ...
-   .........................................................
-   Name                 Stmts   Miss  Cover   Missing
-   --------------------------------------------------
-   dataflake.fakeldap     397     45    89%   ...
-   ----------------------------------------------------------------------
-   Ran 57 tests in 0.071s
-
-   OK
-
-
-Running the tests using  :mod:`zc.buildout`
-===========================================
-:mod:`dataflake.fakeldap` ships with its own :file:`buildout.cfg` file and
-:file:`bootstrap.py` for setting up a development buildout:
-
-.. code-block:: sh
-
-  $ python bootstrap.py
-  ...
-  Generated script '.../bin/buildout'
-  $ bin/buildout
-  ...
+    $ cd dataflake.fakeldap
+    $ python2.7 -m virtualenv .     # PYTHON 2
+    $ python3 -m venv .             # PYTHON 3
+    $ bin/pip install -U pip        # Make sure pip is compatible
+    $ bin/pip install zc.buildout
+    $ bin/buildout
+    ...
 
 Once you have a buildout, the tests can be run as follows:
 
-.. code-block:: sh
+.. code-block:: console
 
    $ bin/test 
    Running tests at level 1
@@ -129,13 +53,32 @@ Once you have a buildout, the tests can be run as follows:
      Tear down zope.testrunner.layer.UnitTests in 0.000 seconds.
 
 
+The package also ships with a ``tox`` configuration that will run the tests
+across all supported Python versons, and the linting and code coverage check:
+
+.. code-block:: console
+
+    $ bin/tox
+    ...
+    py27: commands succeeded
+    py34: commands succeeded
+    py35: commands succeeded
+    py36: commands succeeded
+    py37: commands succeeded
+    py38: commands succeeded
+    pypy: commands succeeded
+    pypy3: commands succeeded
+    coverage: commands succeeded
+    flake8: commands succeeded
+
+
 Building the documentation using :mod:`zc.buildout`
 ===================================================
 The :mod:`dataflake.fakeldap` buildout installs the Sphinx 
 scripts required to build the documentation, including testing 
 its code snippets:
 
-.. code-block:: sh
+.. code-block:: console
 
     $ cd docs
     $ make html
@@ -151,10 +94,14 @@ These instructions assume that you have a development sandbox set
 up using :mod:`zc.buildout` as the scripts used here are generated 
 by the buildout.
 
-.. code-block:: sh
+.. code-block:: console
 
-  $ bin/buildout -o
-  $ python setup.py sdist bdist_wheel upload --sign
+    $ cd dataflake.fakeldap
+    $ bin/pip install -U wheel twine
+    $ rm -rf dist
+    $ bin/buildout -N
+    $ bin/buildout setup setup.py sdist bdist_wheel
+    $ bin/twine upload -s dist/*
 
 The ``bin/buildout`` step will make sure the correct package information 
 is used.

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2000-2012 Jens Vagelpohl and Contributors. All Rights Reserved.
+# Copyright (c) 2009-2021 Jens Vagelpohl and Contributors. All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -16,11 +16,11 @@
 from copy import deepcopy
 import ldap
 
-from dataflake.fakeldap.db import DataStore
-from dataflake.fakeldap.queryparser import Parser
-from dataflake.fakeldap.utils import explode_dn
-from dataflake.fakeldap.utils import hash_pwd
-from dataflake.fakeldap.utils import utf8_string
+from .db import DataStore
+from .queryparser import Parser
+from .utils import explode_dn
+from .utils import hash_pwd
+from .utils import utf8_string
 
 PARSER = Parser()
 ANY = PARSER.parse_query(b'(objectClass=*)')

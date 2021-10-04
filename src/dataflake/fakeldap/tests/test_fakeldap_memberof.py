@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2012 Jens Vagelpohl and Contributors. All Rights Reserved.
+# Copyright (c) 2012-2021 Jens Vagelpohl and Contributors. All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -11,13 +11,13 @@
 #
 ##############################################################################
 
-from dataflake.fakeldap.tests.base import FakeLDAPTests
+from .base import FakeLDAPTests
 
 
 class MemberOfTests(FakeLDAPTests):
 
     def _getTargetClass(self):
-        from dataflake.fakeldap import FakeLDAPConnection
+        from .. import FakeLDAPConnection
 
         class MemberOfConnection(FakeLDAPConnection):
             """ A FakeLDAPConnection with memberof management enabled

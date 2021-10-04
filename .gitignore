@@ -8,8 +8,10 @@ __pycache__
 .coverage
 .installed.cfg
 .mr.developer.cfg
+default.profraw
 nosetests.xml
 coverage.xml
+pyvenv.cfg
 .eggs/
 .tox/
 bin/
@@ -19,4 +21,5 @@ eggs/
 develop-eggs/
 dist/
 docs/_build/
+lib/
 parts/

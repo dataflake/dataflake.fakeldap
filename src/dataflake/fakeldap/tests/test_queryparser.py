@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2012 Jens Vagelpohl and Contributors. All Rights Reserved.
+# Copyright (c) 2012-2021 Jens Vagelpohl and Contributors. All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -19,7 +19,7 @@ import six
 class ParserTests(unittest.TestCase):
 
     def _getTargetClass(self):
-        from dataflake.fakeldap.queryparser import Parser
+        from ..queryparser import Parser
         return Parser
 
     def _makeOne(self):
@@ -129,8 +129,8 @@ class ParserTests(unittest.TestCase):
                           "'cn=test,ou=people,dc=dataflake,dc=org'))))"))
 
     def test_flatten(self):
-        from dataflake.fakeldap.op import Op
-        from dataflake.fakeldap.queryfilter import Filter
+        from ..op import Op
+        from ..queryfilter import Filter
 
         parser = self._makeOne()
         query = b'(&(objectclass=person)(|(cn=Jeff Hunter)(cn=mhunter*)))'

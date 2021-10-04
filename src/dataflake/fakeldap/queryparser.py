@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2012 Jens Vagelpohl and Contributors. All Rights Reserved.
+# Copyright (c) 2012-2021 Jens Vagelpohl and Contributors. All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -16,9 +15,9 @@ import re
 
 import six
 
-from dataflake.fakeldap.op import Op
-from dataflake.fakeldap.queryfilter import Filter
-from dataflake.fakeldap.utils import utf8_string
+from .op import Op
+from .queryfilter import Filter
+from .utils import utf8_string
 
 # From http://www.ietf.org/rfc/rfc2254.txt, Section 4
 # with references to http://www.ietf.org/rfc/rfc2251.txt
@@ -49,17 +48,17 @@ from dataflake.fakeldap.utils import utf8_string
 
 
 _FLTR = br'\(\w*?=[\*\w\s=,\\]*?\)'
-_OP = b'[&\|\!]{1}'
+_OP = br'[&\|\!]{1}'
 
 FLTR = (br'\((?P<attr>\w*?)(?P<comp>=)' +
         br'(?P<value>[\*\w\s=,\\\'@\-\+_\.^\W\d_]*?)\)' +
-        b'(?P<fltr>.*)')
+        br'(?P<fltr>.*)')
 FLTR_RE = re.compile(FLTR.decode(), re.UNICODE)
 
-FULL = b'\((?P<op>(%s))(?P<fltr>.*)\)' % _OP
+FULL = br'\((?P<op>(%s))(?P<fltr>.*)\)' % _OP
 FULL_RE = re.compile(FULL)
 
-OP = b'\((?P<op>(%s))(?P<fltr>(%s)*)\)' % (_OP, _FLTR)
+OP = br'\((?P<op>(%s))(?P<fltr>(%s)*)\)' % (_OP, _FLTR)
 OP_RE = re.compile(OP)
 
 

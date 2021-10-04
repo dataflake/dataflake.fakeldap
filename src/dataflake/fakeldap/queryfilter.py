@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2012 Jens Vagelpohl and Contributors. All Rights Reserved.
+# Copyright (c) 2012-2021 Jens Vagelpohl and Contributors. All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -13,7 +13,7 @@
 
 import six
 
-from dataflake.fakeldap.utils import from_utf8
+from .utils import from_utf8
 
 
 class Filter(object):

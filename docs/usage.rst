@@ -43,4 +43,3 @@ patch in the :class:`ldap.fakeldap.FakeLDAPConnection` class:
         def test_something(self):
             ...
 
-

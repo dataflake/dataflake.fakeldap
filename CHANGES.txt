@@ -1,8 +1,13 @@
 Change log
 ==========
 
-2.4 (unreleased)
+3.0 (unreleased)
 ----------------
+- move from ``bootstrap.py`` to ``virtualenv`` and ``pip`` for bootstrapping
+
+- add support for Python 3.8, 3.9 and 3.10 and Pypy/Pypy3
+
+- reorganize package structure
 
 
 2.3 (2018-06-29)

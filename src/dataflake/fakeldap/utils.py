@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2012 Jens Vagelpohl and Contributors. All Rights Reserved.
+# Copyright (c) 2012-2021 Jens Vagelpohl and Contributors. All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -11,10 +11,11 @@
 #
 ##############################################################################
 
-from base64 import b64encode
 import functools
-from hashlib import sha1 as sha_new
 import inspect
+from base64 import b64encode
+from hashlib import sha1 as sha_new
+
 import ldap.dn
 import six
 

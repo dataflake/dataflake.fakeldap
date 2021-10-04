@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2008-2012 Jens Vagelpohl and Contributors. All Rights Reserved.
+# Copyright (c) 2008-2021 Jens Vagelpohl and Contributors. All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -15,13 +15,13 @@
 
 import unittest
 
-from dataflake.fakeldap.utils import to_utf8
+from ..utils import to_utf8
 
 
 class FakeLDAPTests(unittest.TestCase):
 
     def setUp(self):
-        from dataflake.fakeldap import TREE
+        from .. import TREE
         self.db = TREE
         self.db.addTreeItems(b'ou=users,dc=localhost')
         self.db.addTreeItems(b'ou=groups,dc=localhost')
@@ -30,7 +30,7 @@ class FakeLDAPTests(unittest.TestCase):
         self.db.clear()
 
     def _getTargetClass(self):
-        from dataflake.fakeldap import FakeLDAPConnection
+        from ..import FakeLDAPConnection
         return FakeLDAPConnection
 
     def _makeOne(self, *args, **kw):
@@ -38,7 +38,7 @@ class FakeLDAPTests(unittest.TestCase):
         return conn
 
     def _addUser(self, name, mail=None):
-        from dataflake.fakeldap.utils import hash_pwd
+        from ..utils import hash_pwd
         conn = self._makeOne()
         utf8_name = to_utf8(name)
         user_dn = b'cn=%s,ou=users,dc=localhost' % utf8_name

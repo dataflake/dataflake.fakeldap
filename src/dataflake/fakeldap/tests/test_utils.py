@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 ##############################################################################
 #
-# Copyright (c) 2012 Jens Vagelpohl and Contributors. All Rights Reserved.
+# Copyright (c) 2012-2021 Jens Vagelpohl and Contributors. All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -19,14 +18,14 @@ import unittest
 class HashPwdTests(unittest.TestCase):
 
     def test_hash_pwd(self):
-        from dataflake.fakeldap.utils import hash_pwd
+        from ..utils import hash_pwd
         pwd = hash_pwd('secret')
         self.assertTrue(isinstance(pwd, six.binary_type))
         self.assertTrue(pwd.startswith(b'{SHA}'))
 
     def test_hash_unicode_pwd(self):
-        from dataflake.fakeldap.utils import hash_pwd
-        pwd = hash_pwd(u'bjørn')
+        from ..utils import hash_pwd
+        pwd = hash_pwd(u'bj\xf8rn')
         self.assertTrue(isinstance(pwd, six.binary_type))
         self.assertTrue(pwd.startswith(b'{SHA}'))
 
@@ -34,7 +33,7 @@ class HashPwdTests(unittest.TestCase):
 class ConstraintUtilTests(unittest.TestCase):
 
     def test_to_utf8(self):
-        from dataflake.fakeldap.utils import utf8_string
+        from ..utils import utf8_string
 
         @utf8_string('test')
         def _fn_with_opt_args(test='string'):
