@@ -15,7 +15,7 @@ import re
 
 from .op import Op
 from .queryfilter import Filter
-from .utils import utf8_string
+from .utils import check_types
 
 # From http://www.ietf.org/rfc/rfc2254.txt, Section 4
 # with references to http://www.ietf.org/rfc/rfc2251.txt
@@ -62,7 +62,7 @@ OP_RE = re.compile(OP)
 
 class Parser:
 
-    @utf8_string('query')
+    @check_types(('query', bytes),)
     def parse_query(self, query, recurse=False):
         """ Parse a query string into a series of Ops and Filters
         """

@@ -16,9 +16,21 @@
 ====================
  dataflake.fakeldap
 ====================
-This package offers a mock ``pyldap`` library that can be used 
-for testing code relying on ``pyldap`` without having to configure 
+This package offers a mock ``python-ldap`` library that can be used 
+for testing code relying on ``python-ldap`` without having to configure 
 and populate a real directory server.
+
+Starting with version 3.0 the library will behave just like ``python-ldap``
+version 3.3 or higher:
+
+- distinguished names, relative distinguished names, attribute names and
+  queries are expected to be native un-encoded string values.
+
+- attribute values are expected to be bytes values.
+
+If you pass the wrong type of string, the library will raise a ``TypeError``.
+See https://www.python-ldap.org/en/latest/bytes_mode.html for a short
+description of this behavior.
 
 
 Documentation

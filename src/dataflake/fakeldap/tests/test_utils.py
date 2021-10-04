@@ -31,11 +31,17 @@ class HashPwdTests(unittest.TestCase):
 
 class ConstraintUtilTests(unittest.TestCase):
 
-    def test_to_utf8(self):
-        from ..utils import utf8_string
+    def test_check_types(self):
+        from ..utils import check_types
 
-        @utf8_string('test')
-        def _fn_with_opt_args(test='string'):
+        @check_types(('test', str), ('test2', bytes))
+        def _test_me(test, test2):
             return True
 
-        self.assertTrue(_fn_with_opt_args())
+        self.assertTrue(_test_me('stringvalue', b'bytesvalue'))
+
+        with self.assertRaises(TypeError) as context:
+            _test_me(b'bytesvalue', 'stringvalue')
+        self.assertEqual(str(context.exception),
+                         'Parameter "test" must be str, '
+                         "found b'bytesvalue' (bytes)")

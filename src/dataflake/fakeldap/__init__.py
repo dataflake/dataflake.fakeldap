@@ -18,9 +18,9 @@ import ldap
 
 from .db import DataStore
 from .queryparser import Parser
+from .utils import check_types
 from .utils import explode_dn
 from .utils import hash_pwd
-from .utils import utf8_string
 
 PARSER = Parser()
 ANY = PARSER.parse_query(b'(objectClass=*)')
@@ -45,7 +45,7 @@ class FakeLDAPConnection:
     def set_option(self, option, value):
         self.options[option] = value
 
-    @utf8_string('binduid')
+    @check_types(('binduid', bytes),)
     def simple_bind_s(self, binduid, bindpwd):
         self._last_bind = (self.simple_bind_s, (binduid, bindpwd), {})
 
@@ -77,7 +77,7 @@ class FakeLDAPConnection:
             return entry
         return {k: v for k, v in entry.items() if k in attrs}
 
-    @utf8_string('base', 'query')
+    @check_types(('base', bytes), ('query', bytes))
     def search_s(self, base, scope=ldap.SCOPE_SUBTREE,
                  query=b'(objectClass=*)', attrs=()):
 
@@ -157,7 +157,7 @@ class FakeLDAPConnection:
 
         return []
 
-    @utf8_string('dn')
+    @check_types(('dn', bytes),)
     def add_s(self, dn, attr_list):
         elems = explode_dn(dn)
         rdn = elems[0]
@@ -183,7 +183,7 @@ class FakeLDAPConnection:
                                         self.memberof_attr,
                                         [dn])])
 
-    @utf8_string('dn')
+    @check_types(('dn', bytes),)
     def delete_s(self, dn):
         elems = explode_dn(dn)
         rdn = elems[0]
@@ -208,7 +208,7 @@ class FakeLDAPConnection:
 
         del tree_pos[rdn]
 
-    @utf8_string('dn')
+    @check_types(('dn', bytes),)
     def modify_s(self, dn, mod_list):
         elems = explode_dn(dn)
         rdn = elems[0]
@@ -257,7 +257,7 @@ class FakeLDAPConnection:
                                             self.memberof_attr,
                                             [dn])])
 
-    @utf8_string('dn', 'new_rdn')
+    @check_types(('dn', bytes), ('new_rdn', bytes))
     def modrdn_s(self, dn, new_rdn, *ign):
         elems = explode_dn(dn)
         rdn = elems[0]

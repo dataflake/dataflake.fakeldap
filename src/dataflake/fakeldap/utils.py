@@ -53,17 +53,17 @@ def from_utf8(to_convert):
     return to_convert
 
 
-def utf8_string(*tested):
-    """ Decorator function to check one or more function arguments
-    """
+def check_types(*tested):
+    """ Decorator to check parameter types """
 
-    def _check_utf8_string(called_function):
+    def _check_types(called_function):
         spec = inspect.getfullargspec(called_function)
-        test_indices = [(x, spec[0].index(x)) for x in tested if x in spec[0]]
+        test_indices = [(name, typ, spec[0].index(name)) for (name, typ) in tested
+                        if name in spec[0]]
 
         @functools.wraps(called_function)
         def _check(*args, **kw):
-            for arg_name, arg_index in test_indices:
+            for arg_name, arg_type, arg_index in test_indices:
                 if arg_name in kw:
                     arg_val = kw.get(arg_name)
                 elif arg_index < len(args):
@@ -71,14 +71,15 @@ def utf8_string(*tested):
                 else:
                     continue  # fallback to default arguments
 
-                if not isinstance(arg_val, bytes):
-                    msg = 'Parameter %s must be UTF-8, found %s (%s)'
+                if not isinstance(arg_val, arg_type):
+                    msg = 'Parameter "%s" must be %s, found %s (%s)'
                     raise TypeError(msg % (arg_name,
+                                           arg_type.__name__,
                                            str(arg_val),
-                                           type(arg_val)))
+                                           type(arg_val).__name__))
 
             return called_function(*args, **kw)
 
         return _check
 
-    return _check_utf8_string
+    return _check_types
