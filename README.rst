@@ -1,5 +1,10 @@
-.. image:: https://api.travis-ci.org/dataflake/dataflake.fakeldap.svg?branch=master
-   :target: https://travis-ci.org/dataflake/dataflake.fakeldap
+.. image:: https://github.com/dataflake/dataflake.fakeldap/actions/workflows/tests.yml/badge.svg
+   :target: https://github.com/dataflake/dataflake.fakeldap/actions/workflows/tests.yml
+   :alt: Unit test status
+
+.. image:: https://coveralls.io/repos/github/dataflake/dataflake.fakeldap/badge.svg?branch=master
+   :target: https://coveralls.io/github/dataflake/dataflake.fakeldap?branch=master
+   :alt: Coverage Status
 
 .. image:: https://readthedocs.org/projects/dataflakefakeldap/badge/?version=latest
    :target: https://dataflakefakeldap.readthedocs.io
@@ -31,6 +36,10 @@ version 3.3 or higher:
 If you pass the wrong type of string, the library will raise a ``TypeError``.
 See https://www.python-ldap.org/en/latest/bytes_mode.html for a short
 description of this behavior.
+
+Since queries are un-encoded string values and attribute values passed in the
+query would never match bytes values in the data store, searches will always
+test against both unencoded and bytes values.
 
 
 Documentation
