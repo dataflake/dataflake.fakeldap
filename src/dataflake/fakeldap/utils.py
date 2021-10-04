@@ -24,7 +24,8 @@ def check_types(*tested):
 
     def _check_types(called_function):
         spec = inspect.getfullargspec(called_function)
-        test_indices = [(name, typ, spec[0].index(name)) for (name, typ) in tested
+        test_indices = [(name, typ, spec[0].index(name))
+                        for (name, typ) in tested
                         if name in spec[0]]
 
         @functools.wraps(called_function)

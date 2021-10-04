@@ -42,7 +42,7 @@ class FakeLDAPTests(unittest.TestCase):
 
         conn = self._makeOne()
         user_dn = 'cn=%s,ou=users,dc=localhost' % name
-        user_pwd = ('%s_secret' % name).encode('UTF-8')
+        user_pwd = to_utf8('%s_secret' % name)
 
         if conn.hash_password:
             pwd = hash_pwd(user_pwd)

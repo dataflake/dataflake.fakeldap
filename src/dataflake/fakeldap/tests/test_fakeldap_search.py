@@ -11,7 +11,6 @@
 #
 ##############################################################################
 
-from ..utils import to_utf8
 from .base import FakeLDAPTests
 
 
