@@ -11,7 +11,6 @@
 #
 ##############################################################################
 
-import six
 import unittest
 
 
@@ -20,13 +19,13 @@ class HashPwdTests(unittest.TestCase):
     def test_hash_pwd(self):
         from ..utils import hash_pwd
         pwd = hash_pwd('secret')
-        self.assertTrue(isinstance(pwd, six.binary_type))
+        self.assertTrue(isinstance(pwd, bytes))
         self.assertTrue(pwd.startswith(b'{SHA}'))
 
     def test_hash_unicode_pwd(self):
         from ..utils import hash_pwd
         pwd = hash_pwd(u'bj\xf8rn')
-        self.assertTrue(isinstance(pwd, six.binary_type))
+        self.assertTrue(isinstance(pwd, bytes))
         self.assertTrue(pwd.startswith(b'{SHA}'))
 
 

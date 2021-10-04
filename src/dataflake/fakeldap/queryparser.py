@@ -13,8 +13,6 @@
 
 import re
 
-import six
-
 from .op import Op
 from .queryfilter import Filter
 from .utils import utf8_string
@@ -88,7 +86,7 @@ class Parser(object):
 
         # Under Python 3, our regular expression is type <str>, which
         # does not handle <bytes>. Doing a temporary decode.
-        decode_needed = six.PY3 and isinstance(query, bytes)
+        decode_needed = isinstance(query, bytes)
         if decode_needed:
             query = query.decode('UTF-8')
 

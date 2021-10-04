@@ -11,8 +11,6 @@
 #
 ##############################################################################
 
-import six
-
 from .utils import from_utf8
 
 
@@ -27,12 +25,9 @@ class Filter(object):
 
     def __repr__(self):
         repr_template = "Filter('%s', '%s', '%s')"
-        if six.PY2:
-            return repr_template % (self.attr, self.comp, self.value)
-        else:
-            return repr_template % (from_utf8(self.attr),
-                                    from_utf8(self.comp),
-                                    from_utf8(self.value))
+        return repr_template % (from_utf8(self.attr),
+                                from_utf8(self.comp),
+                                from_utf8(self.value))
 
     def __eq__(self, other):
         v1 = (self.attr.lower(), self.comp, self.value)
@@ -51,9 +46,6 @@ class Filter(object):
         res = []
         query_value = self.value[:]
         wildcard = False
-
-        if six.PY2 and isinstance(base, six.text_type):
-            base = base.encode('UTF-8')
 
         if query_value.startswith(b'*') or query_value.endswith(b'*'):
             if query_value != b'*':

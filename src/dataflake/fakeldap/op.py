@@ -11,8 +11,6 @@
 #
 ##############################################################################
 
-import six
-
 from .utils import from_utf8
 
 
@@ -26,7 +24,4 @@ class Op(object):
         self.op = op
 
     def __repr__(self):
-        if six.PY2:
-            return "Op('%s')" % self.op
-        else:
-            return "Op('%s')" % from_utf8(self.op)
+        return "Op('%s')" % from_utf8(self.op)

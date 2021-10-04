@@ -17,25 +17,24 @@ from base64 import b64encode
 from hashlib import sha1 as sha_new
 
 import ldap.dn
-import six
 
 
 def hash_pwd(pwd_str):
-    if isinstance(pwd_str, six.text_type):
+    if isinstance(pwd_str, str):
         pwd_str = pwd_str.encode('utf-8')
     sha_digest = sha_new(pwd_str).digest()
     return b'{SHA}%s' % b64encode(sha_digest).strip()
 
 
 def explode_dn(dn):
-    if isinstance(dn, six.text_type):
+    if isinstance(dn, str):
         # DNs are expected to be UTF-8-encoded
         dn = dn.encode('UTF-8')
 
     parts = []
     raw_parts = ldap.dn.explode_dn(dn)
     for part in raw_parts:
-        if isinstance(part, six.text_type):
+        if isinstance(part, str):
             part = part.encode('UTF-8')
         parts.append(part)
 
@@ -43,13 +42,13 @@ def explode_dn(dn):
 
 
 def to_utf8(to_convert):
-    if not isinstance(to_convert, six.binary_type):
+    if not isinstance(to_convert, bytes):
         to_convert = to_convert.encode('UTF-8')
     return to_convert
 
 
 def from_utf8(to_convert):
-    if isinstance(to_convert, six.binary_type):
+    if isinstance(to_convert, bytes):
         to_convert = to_convert.decode('UTF-8')
     return to_convert
 
@@ -59,10 +58,7 @@ def utf8_string(*tested):
     """
 
     def _check_utf8_string(called_function):
-        if six.PY2:
-            spec = inspect.getargspec(called_function)
-        else:
-            spec = inspect.getfullargspec(called_function)
+        spec = inspect.getfullargspec(called_function)
         test_indices = [(x, spec[0].index(x)) for x in tested if x in spec[0]]
 
         @functools.wraps(called_function)
@@ -75,7 +71,7 @@ def utf8_string(*tested):
                 else:
                     continue  # fallback to default arguments
 
-                if not isinstance(arg_val, six.binary_type):
+                if not isinstance(arg_val, bytes):
                     msg = 'Parameter %s must be UTF-8, found %s (%s)'
                     raise TypeError(msg % (arg_name,
                                            str(arg_val),

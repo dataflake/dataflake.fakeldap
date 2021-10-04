@@ -66,7 +66,6 @@ setup(name=NAME,
       zip_safe=False,
       install_requires=[
         'setuptools',
-        'six',
         'python-ldap',
         ],
       tests_require=['python-ldap'],

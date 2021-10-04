@@ -13,8 +13,6 @@
 
 import unittest
 
-import six
-
 
 class ParserTests(unittest.TestCase):
 
@@ -42,9 +40,7 @@ class ParserTests(unittest.TestCase):
 
         # Under Python 3, __repr__ for the Filter class will return a
         # <str>, so we need to decode the expected result to match.
-        if six.PY3:
-            expected = expected.decode('UTF-8')
-        self.assertEqual(repr(parsed), expected)
+        self.assertEqual(repr(parsed), expected.decode('UTF-8'))
 
     def test_parse_chained(self):
         parser = self._makeOne()
