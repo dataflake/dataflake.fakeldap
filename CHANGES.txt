@@ -5,7 +5,9 @@ Change log
 ----------------
 - move from ``bootstrap.py`` to ``virtualenv`` and ``pip`` for bootstrapping
 
-- add support for Python 3.8, 3.9 and 3.10 and Pypy/Pypy3
+- add support for Python 3.8, 3.9 and 3.10 and Pypy3
+
+- drop support for Python 2
 
 - reorganize package structure
 
