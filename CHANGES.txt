@@ -3,6 +3,10 @@ Change log
 
 3.0 (unreleased)
 ----------------
+- emulate string/bytes treatment from ``python-ldap`` version 3.3 and up,
+  see https://www.python-ldap.org/en/latest/bytes_mode.html and ``README.rst``
+  in this folder.
+
 - move from ``bootstrap.py`` to ``virtualenv`` and ``pip`` for bootstrapping
 
 - add support for Python 3.8, 3.9 and 3.10 and Pypy3

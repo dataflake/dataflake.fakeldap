@@ -45,24 +45,24 @@ from .utils import check_types
 # value      = AttributeValue from Section 4.1.6 of RFC 2251
 
 
-_FLTR = br'\(\w*?=[\*\w\s=,\\]*?\)'
-_OP = br'[&\|\!]{1}'
+_FLTR = r'\(\w*?=[\*\w\s=,\\]*?\)'
+_OP = r'[&\|\!]{1}'
 
-FLTR = (br'\((?P<attr>\w*?)(?P<comp>=)' +
-        br'(?P<value>[\*\w\s=,\\\'@\-\+_\.^\W\d_]*?)\)' +
-        br'(?P<fltr>.*)')
-FLTR_RE = re.compile(FLTR.decode(), re.UNICODE)
+FLTR = (r'\((?P<attr>\w*?)(?P<comp>=)' +
+        r'(?P<value>[\*\w\s=,\\\'@\-\+_\.^\W\d_]*?)\)' +
+        r'(?P<fltr>.*)')
+FLTR_RE = re.compile(FLTR, re.UNICODE)
 
-FULL = br'\((?P<op>(%s))(?P<fltr>.*)\)' % _OP
+FULL = r'\((?P<op>(%s))(?P<fltr>.*)\)' % _OP
 FULL_RE = re.compile(FULL)
 
-OP = br'\((?P<op>(%s))(?P<fltr>(%s)*)\)' % (_OP, _FLTR)
+OP = r'\((?P<op>(%s))(?P<fltr>(%s)*)\)' % (_OP, _FLTR)
 OP_RE = re.compile(OP)
 
 
 class Parser:
 
-    @check_types(('query', bytes),)
+    @check_types(('query', str),)
     def parse_query(self, query, recurse=False):
         """ Parse a query string into a series of Ops and Filters
         """
@@ -84,19 +84,8 @@ class Parser:
                     parts.extend(self.parse_query(rest))
                 return tuple(parts)
 
-        # Under Python 3, our regular expression is type <str>, which
-        # does not handle <bytes>. Doing a temporary decode.
-        decode_needed = isinstance(query, bytes)
-        if decode_needed:
-            query = query.decode('UTF-8')
-
         # Match internal filter.
         d = FLTR_RE.match(query).groupdict()
-
-        # Revert the previous temporary decode
-        if decode_needed:
-            for k, v in d.items():
-                d[k] = v.encode('UTF-8')
 
         parts.append(Filter(d['attr'], d['comp'], d['value']))
         if d['fltr']:
@@ -133,7 +122,7 @@ class Parser:
         level = dig(query, res)
         if not res:
             # A simple filter with no operands
-            return ((Op(b'&'), level),)
+            return ((Op('&'), level),)
         if level:
             # Very likely a single operand around a group of filters.
             assert len(level) == 1, (len(level), level)

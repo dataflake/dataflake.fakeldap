@@ -13,8 +13,6 @@
 
 import unittest
 
-from ..utils import to_utf8
-
 
 class FilterTests(unittest.TestCase):
 
@@ -24,7 +22,7 @@ class FilterTests(unittest.TestCase):
 
     def _makeOne(self, attribute, comparison, value):
         klass = self._getTargetClass()
-        return klass(to_utf8(attribute), to_utf8(comparison), value)
+        return klass(attribute, comparison, value)
 
     def test_repr(self):
         fltr = self._makeOne('cn', '=', 'joe')

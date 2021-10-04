@@ -19,40 +19,6 @@ from hashlib import sha1 as sha_new
 import ldap.dn
 
 
-def hash_pwd(pwd_str):
-    if isinstance(pwd_str, str):
-        pwd_str = pwd_str.encode('utf-8')
-    sha_digest = sha_new(pwd_str).digest()
-    return b'{SHA}%s' % b64encode(sha_digest).strip()
-
-
-def explode_dn(dn):
-    if isinstance(dn, str):
-        # DNs are expected to be UTF-8-encoded
-        dn = dn.encode('UTF-8')
-
-    parts = []
-    raw_parts = ldap.dn.explode_dn(dn)
-    for part in raw_parts:
-        if isinstance(part, str):
-            part = part.encode('UTF-8')
-        parts.append(part)
-
-    return parts
-
-
-def to_utf8(to_convert):
-    if not isinstance(to_convert, bytes):
-        to_convert = to_convert.encode('UTF-8')
-    return to_convert
-
-
-def from_utf8(to_convert):
-    if isinstance(to_convert, bytes):
-        to_convert = to_convert.decode('UTF-8')
-    return to_convert
-
-
 def check_types(*tested):
     """ Decorator to check parameter types """
 
@@ -83,3 +49,32 @@ def check_types(*tested):
         return _check
 
     return _check_types
+
+
+def hash_pwd(pwd_str):
+    if isinstance(pwd_str, str):
+        pwd_str = pwd_str.encode('utf-8')
+    sha_digest = sha_new(pwd_str).digest()
+    return b'{SHA}%s' % b64encode(sha_digest).strip()
+
+
+@check_types(('dn', str),)
+def explode_dn(dn):
+    parts = []
+    raw_parts = ldap.dn.explode_dn(dn)
+    for part in raw_parts:
+        parts.append(part)
+
+    return parts
+
+
+def to_utf8(to_convert):
+    if not isinstance(to_convert, bytes):
+        to_convert = to_convert.encode('UTF-8')
+    return to_convert
+
+
+def from_utf8(to_convert):
+    if isinstance(to_convert, bytes):
+        to_convert = to_convert.decode('UTF-8')
+    return to_convert

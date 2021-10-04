@@ -27,25 +27,21 @@ class ParserTests(unittest.TestCase):
     def test_parse(self):
         parser = self._makeOne()
 
-        query = b'(cn=jhunter*)'
+        query = '(cn=jhunter*)'
         parsed = parser.parse_query(query)
         self.assertEqual(repr(parsed), "(Filter('cn', '=', 'jhunter*'),)")
 
-    def test_parse_utf8(self):
+    def test_parse_nonascii(self):
         parser = self._makeOne()
 
-        query = b'(cn=\xe6\x9f\xb3*)'
+        query = '(cn=\u67f3*)'
         parsed = parser.parse_query(query)
-        expected = b"(Filter('cn', '=', '\xe6\x9f\xb3*'),)"
-
-        # Under Python 3, __repr__ for the Filter class will return a
-        # <str>, so we need to decode the expected result to match.
-        self.assertEqual(repr(parsed), expected.decode('UTF-8'))
+        self.assertEqual(repr(parsed), "(Filter('cn', '=', '\u67f3*'),)")
 
     def test_parse_chained(self):
         parser = self._makeOne()
 
-        query = b'(&(objectclass=person)(cn=jhunter*))'
+        query = '(&(objectclass=person)(cn=jhunter*))'
         parsed = parser.parse_query(query)
         self.assertEqual(repr(parsed),
                          ("(Op('&'), " +
@@ -55,7 +51,7 @@ class ParserTests(unittest.TestCase):
     def test_parse_nestedchain(self):
         parser = self._makeOne()
 
-        query = b'(&(objectclass=person)(|(cn=Jeff Hunter)(cn=mhunter*)))'
+        query = '(&(objectclass=person)(|(cn=Jeff Hunter)(cn=mhunter*)))'
         parsed = parser.parse_query(query)
         self.assertEqual(repr(parsed),
                          ("(Op('&'), " +
@@ -66,7 +62,7 @@ class ParserTests(unittest.TestCase):
     def test_parse_chainwithnegation(self):
         parser = self._makeOne()
 
-        query = b'(&(l=USA)(!(sn=patel)))'
+        query = '(&(l=USA)(!(sn=patel)))'
         parsed = parser.parse_query(query)
         self.assertEqual(repr(parsed),
                          ("(Op('&'), (Filter('l', '=', 'USA'), " +
@@ -75,7 +71,7 @@ class ParserTests(unittest.TestCase):
     def test_parse_negatedchain(self):
         parser = self._makeOne()
 
-        query = b'(!(&(drink=beer)(description=good)))'
+        query = '(!(&(drink=beer)(description=good)))'
         parsed = parser.parse_query(query)
         self.assertEqual(repr(parsed),
                          ("(Op('!'), (Op('&'), " +
@@ -85,7 +81,7 @@ class ParserTests(unittest.TestCase):
     def test_parse_chainwithdn(self):
         parser = self._makeOne()
 
-        query = b'(&(objectclass=person)(dn=cn=jhunter,dc=dataflake,dc=org))'
+        query = '(&(objectclass=person)(dn=cn=jhunter,dc=dataflake,dc=org))'
         parsed = parser.parse_query(query)
         self.assertEqual(repr(parsed),
                          ("(Op('&'), " +
@@ -96,14 +92,14 @@ class ParserTests(unittest.TestCase):
     def test_parse_convoluted(self):
         parser = self._makeOne()
 
-        query = (b'(|(&(objectClass=group)' +
-                 b'(member=cn=test,ou=people,dc=dataflake,dc=org))' +
-                 b'(&(objectClass=groupOfNames)' +
-                 b'(member=cn=test,ou=people,dc=dataflake,dc=org))' +
-                 b'(&(objectClass=groupOfUniqueNames)' +
-                 b'(uniqueMember=cn=test,ou=people,dc=dataflake,dc=org))' +
-                 b'(&(objectClass=accessGroup)' +
-                 b'(member=cn=test,ou=people,dc=dataflake,dc=org)))')
+        query = ('(|(&(objectClass=group)' +
+                 '(member=cn=test,ou=people,dc=dataflake,dc=org))' +
+                 '(&(objectClass=groupOfNames)' +
+                 '(member=cn=test,ou=people,dc=dataflake,dc=org))' +
+                 '(&(objectClass=groupOfUniqueNames)' +
+                 '(uniqueMember=cn=test,ou=people,dc=dataflake,dc=org))' +
+                 '(&(objectClass=accessGroup)' +
+                 '(member=cn=test,ou=people,dc=dataflake,dc=org)))')
         parsed = parser.parse_query(query)
         self.assertEqual(repr(parsed),
                          ("(Op('|'), (Op('&'), " +
@@ -129,7 +125,7 @@ class ParserTests(unittest.TestCase):
         from ..queryfilter import Filter
 
         parser = self._makeOne()
-        query = b'(&(objectclass=person)(|(cn=Jeff Hunter)(cn=mhunter*)))'
+        query = '(&(objectclass=person)(|(cn=Jeff Hunter)(cn=mhunter*)))'
         parsed = parser.parse_query(query)
 
         self.assertEqual(repr(parser.flatten_query(parsed, klass=Filter)),
@@ -141,7 +137,7 @@ class ParserTests(unittest.TestCase):
 
     def test_explode(self):
         parser = self._makeOne()
-        query = b'(&(objectclass=person)(|(cn=Jeff Hunter)(cn=mhunter*)))'
+        query = '(&(objectclass=person)(|(cn=Jeff Hunter)(cn=mhunter*)))'
         parsed = parser.parse_query(query)
 
         exploded = parser.explode_query(parsed)
@@ -155,7 +151,7 @@ class ParserTests(unittest.TestCase):
 
     def test_explode_simple(self):
         parser = self._makeOne()
-        query = b'(objectClass=*)'
+        query = '(objectClass=*)'
         parsed = parser.parse_query(query)
 
         exploded = parser.explode_query(parsed)
@@ -165,14 +161,14 @@ class ParserTests(unittest.TestCase):
 
     def test_explode_convoluted(self):
         parser = self._makeOne()
-        query = (b'(|(&(objectClass=group)' +
-                 b'(member=cn=test,ou=people,dc=dataflake,dc=org))' +
-                 b'(&(objectClass=groupOfNames)' +
-                 b'(member=cn=test,ou=people,dc=dataflake,dc=org))' +
-                 b'(&(objectClass=groupOfUniqueNames)' +
-                 b'(uniqueMember=cn=test,ou=people,dc=dataflake,dc=org))' +
-                 b'(&(objectClass=accessGroup)' +
-                 b'(member=cn=test,ou=people,dc=dataflake,dc=org)))')
+        query = ('(|(&(objectClass=group)' +
+                 '(member=cn=test,ou=people,dc=dataflake,dc=org))' +
+                 '(&(objectClass=groupOfNames)' +
+                 '(member=cn=test,ou=people,dc=dataflake,dc=org))' +
+                 '(&(objectClass=groupOfUniqueNames)' +
+                 '(uniqueMember=cn=test,ou=people,dc=dataflake,dc=org))' +
+                 '(&(objectClass=accessGroup)' +
+                 '(member=cn=test,ou=people,dc=dataflake,dc=org)))')
         parsed = parser.parse_query(query)
 
         exploded = parser.explode_query(parsed)
@@ -202,32 +198,32 @@ class ParserTests(unittest.TestCase):
 
     def test_cmp(self):
         parser = self._makeOne()
-        query_1 = b'(&(objectclass=person)(cn=jhunter*))'
-        query_2 = b'(objectClass=person)'
+        query_1 = '(&(objectclass=person)(cn=jhunter*))'
+        query_2 = '(objectClass=person)'
         parsed_1 = parser.parse_query(query_1)
         parsed_2 = parser.parse_query(query_2)
 
         self.assertEqual(repr(parser.cmp_query(parsed_1, parsed_2)),
                          "Filter('objectClass', '=', 'person')")
 
-        query_1 = b'(&(objectClass=groupOfUniqueNames)(uniqueMember=sidnei))'
-        query_2 = b'(objectClass=groupOfUniqueNames)'
+        query_1 = '(&(objectClass=groupOfUniqueNames)(uniqueMember=sidnei))'
+        query_2 = '(objectClass=groupOfUniqueNames)'
         parsed_1 = parser.parse_query(query_1)
         parsed_2 = parser.parse_query(query_2)
 
         self.assertEqual(repr(parser.cmp_query(parsed_1, parsed_2)),
                          "Filter('objectClass', '=', 'groupOfUniqueNames')")
 
-        query_1 = b'(&(objectClass=groupOfUniqueNames)(uniqueMember=sidnei))'
-        query_2 = b'(uniqueMember=sidnei)'
+        query_1 = '(&(objectClass=groupOfUniqueNames)(uniqueMember=sidnei))'
+        query_2 = '(uniqueMember=sidnei)'
         parsed_1 = parser.parse_query(query_1)
         parsed_2 = parser.parse_query(query_2)
 
         self.assertEqual(repr(parser.cmp_query(parsed_1, parsed_2)),
                          "Filter('uniqueMember', '=', 'sidnei')")
 
-        query_1 = b'(&(objectClass=groupOfUniqueNames)(uniqueMember=sidnei))'
-        query_2 = b'(uniqueMember=jens)'
+        query_1 = '(&(objectClass=groupOfUniqueNames)(uniqueMember=sidnei))'
+        query_2 = '(uniqueMember=jens)'
         parsed_1 = parser.parse_query(query_1)
         parsed_2 = parser.parse_query(query_2)
 

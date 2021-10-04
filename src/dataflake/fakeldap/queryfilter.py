@@ -11,7 +11,7 @@
 #
 ##############################################################################
 
-from .utils import from_utf8
+from .utils import to_utf8
 
 
 class Filter:
@@ -25,9 +25,7 @@ class Filter:
 
     def __repr__(self):
         repr_template = "Filter('%s', '%s', '%s')"
-        return repr_template % (from_utf8(self.attr),
-                                from_utf8(self.comp),
-                                from_utf8(self.value))
+        return repr_template % (self.attr, self.comp, self.value)
 
     def __eq__(self, other):
         v1 = (self.attr.lower(), self.comp, self.value)
@@ -47,16 +45,16 @@ class Filter:
         query_value = self.value[:]
         wildcard = False
 
-        if query_value.startswith(b'*') or query_value.endswith(b'*'):
-            if query_value != b'*':
+        if query_value.startswith('*') or query_value.endswith('*'):
+            if query_value != '*':
                 # Wildcard search
-                if query_value.startswith(b'*') and query_value.endswith(b'*'):
+                if query_value.startswith('*') and query_value.endswith('*'):
                     wildcard = 'both'
                     query_value = query_value[1:-1]
-                elif query_value.startswith(b'*'):
+                elif query_value.startswith('*'):
                     wildcard = 'start'
                     query_value = query_value[1:]
-                elif query_value.endswith(b'*'):
+                elif query_value.endswith('*'):
                     wildcard = 'end'
                     query_value = query_value[:-1]
 
@@ -64,7 +62,7 @@ class Filter:
             found = True
 
             if self.attr in record:
-                if query_value == b'*':
+                if query_value == '*':
                     # Always include if there's a value for it.
                     pass
                 elif wildcard:
@@ -82,14 +80,18 @@ class Filter:
                             if query_value in x:
                                 found = True
                                 break
-                elif query_value not in record[self.attr]:
+                elif (query_value not in record[self.attr] and
+                      to_utf8(query_value) not in record[self.attr]):
+                    # query_value will always be of type "str" and will not
+                    # match the equivalent bytes value, so check against it
+                    # explicitly
                     found = False
 
                 if found:
                     if base.startswith(rdn):
                         dn = base
                     else:
-                        dn = b'%s,%s' % (rdn, base)
+                        dn = '%s,%s' % (rdn, base)
                     res.append((dn, record))
 
         return res

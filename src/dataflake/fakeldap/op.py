@@ -11,9 +11,6 @@
 #
 ##############################################################################
 
-from .utils import from_utf8
-
-
 class Op:
     """ A simple representation for operators like !, &, |
 
@@ -24,4 +21,4 @@ class Op:
         self.op = op
 
     def __repr__(self):
-        return "Op('%s')" % from_utf8(self.op)
+        return "Op('%s')" % self.op
