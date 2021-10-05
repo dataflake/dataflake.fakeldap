@@ -24,6 +24,13 @@ https://github.com/dataflake/dataflake.fakeldap/issues.
 
 Running the tests
 =================
+
+.. note::
+    The module now uses :mod:`volatildap` to do comparison tests between
+    this module and a live LDAP server. In order for this to work you must have
+    a ``slapd`` and ``slaptest`` binary for OpenLDAP version 2.4 in the search
+    path.
+
 :mod:`dataflake.fakeldap` ships with its own :file:`buildout.cfg` buildout
 configuration file. The buildout procedure will set up all requirements
 for running the unit tests and building the documentation.
