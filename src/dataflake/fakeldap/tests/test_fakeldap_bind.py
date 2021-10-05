@@ -11,24 +11,32 @@
 #
 ##############################################################################
 
+import unittest
+
+import ldap
+
 from .base import FakeLDAPTests
+from .base import RealLDAPTests
 
 
 class FakeLDAPBindTests(FakeLDAPTests):
 
     def test_bind_empty_pwd(self):
+        # Empty passwords are disallowed
         conn = self._makeOne()
 
-        # special case for empty password (???)
-        self.assertTrue(conn.simple_bind_s('cn=Anybody', ''))
-        self.assertEqual(conn._last_bind[1], ('cn=Anybody', ''))
+        self.assertRaises(ldap.UNWILLING_TO_PERFORM,
+                          conn.simple_bind_s,
+                          'cn=Anybody',
+                          '')
 
     def test_bind_manager(self):
         conn = self._makeOne()
 
         # special case for logging in as "Manager"
+        # only applies to FakeLDAP connection objects
         self.assertTrue(conn.simple_bind_s('cn=Manager', 'whatever'))
-        self.assertEqual(conn._last_bind[1], ('cn=Manager', 'whatever'))
+        self.assertEqual(conn.whoami_s(), 'dn:cn=Manager')
 
     def test_bind_success(self):
         conn = self._makeOne()
@@ -36,10 +44,9 @@ class FakeLDAPBindTests(FakeLDAPTests):
 
         # Login with correct credentials
         self.assertTrue(conn.simple_bind_s(user_dn, password))
-        self.assertEqual(conn._last_bind[1], (user_dn, password))
+        self.assertEqual(conn.whoami_s(), 'dn:%s' % user_dn)
 
     def test_bind_wrong_pwd(self):
-        import ldap
         conn = self._makeOne()
         user_dn, password = self._addUser('foo')
 
@@ -48,23 +55,29 @@ class FakeLDAPBindTests(FakeLDAPTests):
                           user_dn, 'INVALID PASSWORD')
 
     def test_bind_no_password_in_record(self):
-        import ldap
         conn = self._makeOne()
+        conn.simple_bind_s(self._rootdn, self._rootpw)
 
         # Users with empty passwords cannot log in
-        user2 = [('cn', ['user2'])]
+        encoded_name = b'user2'
+        user2 = [('cn', [encoded_name]),
+                 ('sn', [encoded_name]),
+                 ('objectClass', [b'top', b'person'])]
         conn.add_s('cn=user2,ou=users,dc=localhost', user2)
         self.assertRaises(ldap.INVALID_CREDENTIALS, conn.simple_bind_s,
                           'cn=user2,ou=users,dc=localhost', 'ANY PASSWORD')
 
     def test_bind_no_such_user(self):
-        import ldap
         conn = self._makeOne()
+        conn.simple_bind_s(self._rootdn, self._rootpw)
 
-        # Users with empty passwords cannot log in
-        user2 = [('cn', ['user2'])]
+        encoded_name = b'user2'
+        user2 = [('cn', [encoded_name]),
+                 ('sn', [encoded_name]),
+                 ('userPassword', [b'foo']),
+                 ('objectClass', [b'top', b'person'])]
         conn.add_s('cn=user2,ou=users,dc=localhost', user2)
-        self.assertRaises(ldap.NO_SUCH_OBJECT, conn.simple_bind_s,
+        self.assertRaises(ldap.INVALID_CREDENTIALS, conn.simple_bind_s,
                           'cn=user1,ou=users,dc=localhost', 'ANY PASSWORD')
 
     def test_unbind_clears_last_bind(self):
@@ -72,20 +85,28 @@ class FakeLDAPBindTests(FakeLDAPTests):
         user_dn, password = self._addUser('foo')
 
         self.assertTrue(conn.simple_bind_s(user_dn, password))
-        self.assertEqual(conn._last_bind[1], (user_dn, password))
+        self.assertEqual(conn.whoami_s(), 'dn:%s' % user_dn)
 
         conn.unbind()
-        self.assertEqual(conn._last_bind, None)
+        self.assertRaises(Exception, conn.whoami_s)
 
     def test_unbind_s_clears_last_bind(self):
         conn = self._makeOne()
         user_dn, password = self._addUser('foo')
 
         self.assertTrue(conn.simple_bind_s(user_dn, password))
-        self.assertEqual(conn._last_bind[1], (user_dn, password))
+        self.assertEqual(conn.whoami_s(), 'dn:%s' % user_dn)
 
         conn.unbind_s()
-        self.assertEqual(conn._last_bind, None)
+        self.assertRaises(Exception, conn.whoami_s)
+
+
+@unittest.skipIf(RealLDAPTests is object, 'volatildap module not available')
+class RealLDAPBindTests(FakeLDAPBindTests, RealLDAPTests):
+
+    @unittest.skip('Only applicable for FakeLDAP connection')
+    def test_bind_manager(self):
+        pass
 
 
 class HashedPasswordTests(FakeLDAPTests):
@@ -99,7 +120,9 @@ class HashedPasswordTests(FakeLDAPTests):
         conn = self._makeOne()
         self._addUser('foo')
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo)')
         pwd = res[0][1]['userPassword'][0]
         self.assertEqual(pwd, hash_pwd('foo_secret'))
 
@@ -109,16 +132,20 @@ class HashedPasswordTests(FakeLDAPTests):
 
         # Login with correct credentials
         self.assertTrue(conn.simple_bind_s(user_dn, password))
-        self.assertEqual(conn._last_bind[1], (user_dn, password))
+        self.assertEqual(conn.whoami_s(), 'dn:%s' % user_dn)
 
     def test_bind_wrong_pwd(self):
-        import ldap
         conn = self._makeOne()
         user_dn, password = self._addUser('foo')
 
         # Login with bad credentials
         self.assertRaises(ldap.INVALID_CREDENTIALS, conn.simple_bind_s,
                           user_dn, 'INVALID PASSWORD')
+
+
+@unittest.skipIf(RealLDAPTests is object, 'volatildap module not available')
+class RealLDAPHashedPasswordTests(HashedPasswordTests, RealLDAPTests):
+    pass
 
 
 class ClearTextPasswordTests(FakeLDAPTests):
@@ -141,7 +168,9 @@ class ClearTextPasswordTests(FakeLDAPTests):
         conn = self._makeOne()
         user_dn, password = self._addUser('foo')
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo)')
         pwd = res[0][1]['userPassword'][0]
         self.assertEqual(pwd, b'foo_secret')
 
@@ -153,10 +182,9 @@ class ClearTextPasswordTests(FakeLDAPTests):
         self.assertEqual(user_dn, 'cn=foo,ou=users,dc=localhost')
         self.assertEqual(password, b'foo_secret')
         self.assertTrue(conn.simple_bind_s(user_dn, password))
-        self.assertEqual(conn._last_bind[1], (user_dn, password))
+        self.assertEqual(conn.whoami_s(), 'dn:%s' % user_dn)
 
     def test_bind_wrong_pwd(self):
-        import ldap
         conn = self._makeOne()
         user_dn, password = self._addUser('foo')
 

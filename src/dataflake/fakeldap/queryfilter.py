@@ -68,6 +68,10 @@ class Filter:
                 elif wildcard:
                     found = False
                     for x in record[self.attr]:
+
+                        if isinstance(x, bytes):
+                            x = x.decode('UTF-8')
+
                         if wildcard == 'start':
                             if x.endswith(query_value):
                                 found = True

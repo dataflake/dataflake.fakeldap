@@ -53,14 +53,19 @@ class FakeLDAPConnection:
             return 1
 
         if bindpwd in (b'', ''):
-            # Emulate LDAP mis-behavior
-            return 1
+            msg = 'unauthenticated bind (DN with no password) disallowed'
+            raise ldap.UNWILLING_TO_PERFORM(msg)
 
         if self.hash_password:
             bindpwd = hash_pwd(bindpwd)
 
-        rec = self.search_s(binduid, scope=ldap.SCOPE_BASE,
-                            query='(objectClass=*)', attrs=('userPassword',))
+        try:
+            rec = self.search_s(binduid,
+                                ldap.SCOPE_BASE,
+                                filterstr='(objectClass=*)',
+                                attrlist=('userPassword',))
+        except ldap.NO_SUCH_OBJECT:
+            raise ldap.INVALID_CREDENTIALS
 
         rec_pwd = rec[0][1].get('userPassword')
 
@@ -72,26 +77,39 @@ class FakeLDAPConnection:
         else:
             raise ldap.INVALID_CREDENTIALS
 
-    def _filter_attrs(self, entry, attrs):
-        if not attrs:
+    def whoami_s(self):
+        if self._last_bind:
+            return 'dn:%s' % self._last_bind[1][0]
+        raise AttributeError
+
+    def _filter_attrlist(self, entry, attrlist):
+        if not attrlist:
             return entry
-        return {k: v for k, v in entry.items() if k in attrs}
+        return {k: v for k, v in entry.items() if k in attrlist}
 
-    @check_types(('base', str), ('query', str))
-    def search_s(self, base, scope=ldap.SCOPE_SUBTREE,
-                 query='(objectClass=*)', attrs=()):
+    @check_types(('base', str), ('filterstr', str))
+    def search_s(self, base, scope,
+                 filterstr='(objectClass=*)', attrlist=None):
+        parsed_query = self.parser.parse_query(filterstr)
 
-        parsed_query = self.parser.parse_query(query)
-        tree_pos = TREE.getElementByDN(base)
+        try:
+            tree_pos = TREE.getElementByDN(base)
+        except ldap.UNWILLING_TO_PERFORM:
+            raise ldap.NO_SUCH_OBJECT(base)
 
         if self.parser.cmp_query(parsed_query, ANY, strict=True):
             # Return all objects, no matter what class
             if scope == ldap.SCOPE_BASE:
                 # Only if dn matches 'base'
-                return [(base, deepcopy(self._filter_attrs(tree_pos, attrs)))]
+                return [(base,
+                         deepcopy(self._filter_attrlist(tree_pos, attrlist)))]
             else:
-                return [(k, deepcopy(self._filter_attrs(v, attrs)))
-                        for k, v in tree_pos.items()]
+                res = [(base,
+                        deepcopy(self._filter_attrlist(tree_pos, attrlist)))]
+                res.extend([('%s,%s' % (k, base),
+                             deepcopy(self._filter_attrlist(v, attrlist)))
+                           for k, v in tree_pos.items()])
+                return res
 
         if scope == ldap.SCOPE_BASE:
             # At this stage tree_pos will be a leaf record. We need to
@@ -152,7 +170,7 @@ class FakeLDAPConnection:
                         lvl[:] = new_lvl
         if by_level:
             # Return the last one.
-            return [(k, deepcopy(self._filter_attrs(v, attrs)))
+            return [(k, deepcopy(self._filter_attrlist(v, attrlist)))
                     for k, v in by_level[idx]]
 
         return []
@@ -316,8 +334,8 @@ class RaisingFakeLDAPConnection(FakeLDAPConnection):
 class FixedResultFakeLDAPConnection(FakeLDAPConnection):
     search_results = []
 
-    def search_s(self, base, scope=ldap.SCOPE_SUBTREE,
-                 query='(objectClass=*)', attrs=()):
+    def search_s(self, base, scope,
+                 filterstr='(objectClass=*)', attrlist=None):
         return self.search_results
 
 

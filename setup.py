@@ -68,7 +68,7 @@ setup(name=NAME,
         'setuptools',
         'python-ldap',
         ],
-      tests_require=['python-ldap'],
+      tests_require=['python-ldap', 'volatildap'],
       test_suite='%s.tests' % NAME,
       extras_require={
         'docs': ['Sphinx',

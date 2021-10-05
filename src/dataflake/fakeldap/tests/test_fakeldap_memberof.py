@@ -11,6 +11,8 @@
 #
 ##############################################################################
 
+import ldap
+
 from .base import FakeLDAPTests
 
 
@@ -38,7 +40,8 @@ class MemberOfTests(FakeLDAPTests):
         self._addGroup('engineering', ['foo', 'bar'])
 
         res = conn.search_s('ou=groups,dc=localhost',
-                            query='(cn=engineering)')
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=engineering)')
         self.assertEqual(sorted(res[0][1][conn.member_attr]),
                          ['cn=bar,ou=users,dc=localhost',
                           'cn=foo,ou=users,dc=localhost'])
@@ -50,19 +53,24 @@ class MemberOfTests(FakeLDAPTests):
         self._addUser('baz')
         self._addGroup('engineering', ['foo', 'bar'])
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo)')
         self.assertEqual(res[0][1][conn.memberof_attr],
                          ['cn=engineering,ou=groups,dc=localhost'])
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=bar)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=bar)')
         self.assertEqual(res[0][1][conn.memberof_attr],
                          ['cn=engineering,ou=groups,dc=localhost'])
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=baz)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=baz)')
         self.assertEqual(res[0][1].get(conn.memberof_attr, []), [])
 
     def test_add_group_member_updates_memberof_attr(self):
-        import ldap
         conn = self._makeOne()
         self._addUser('foo')
         self._addUser('bar')
@@ -73,19 +81,24 @@ class MemberOfTests(FakeLDAPTests):
                       [(ldap.MOD_ADD, conn.member_attr,
                        ['cn=bar,ou=users,dc=localhost'])])
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo)')
         self.assertEqual(res[0][1][conn.memberof_attr],
                          ['cn=engineering,ou=groups,dc=localhost'])
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=bar)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=bar)')
         self.assertEqual(res[0][1][conn.memberof_attr],
                          ['cn=engineering,ou=groups,dc=localhost'])
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=baz)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=baz)')
         self.assertEqual(res[0][1].get(conn.memberof_attr, []), [])
 
     def test_delete_group_member_updates_memberof_attr(self):
-        import ldap
         conn = self._makeOne()
         self._addUser('foo')
         self._addUser('bar')
@@ -96,14 +109,20 @@ class MemberOfTests(FakeLDAPTests):
                       [(ldap.MOD_DELETE, conn.member_attr,
                        ['cn=foo,ou=users,dc=localhost'])])
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo)')
         self.assertEqual(res[0][1].get(conn.memberof_attr, []), [])
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=bar)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=bar)')
         self.assertEqual(res[0][1][conn.memberof_attr],
                          ['cn=engineering,ou=groups,dc=localhost'])
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=baz)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=baz)')
         self.assertEqual(res[0][1][conn.memberof_attr],
                          ['cn=engineering,ou=groups,dc=localhost'])
 
@@ -117,7 +136,8 @@ class MemberOfTests(FakeLDAPTests):
         conn.delete_s('cn=foo,ou=users,dc=localhost')
 
         res = conn.search_s('ou=groups,dc=localhost',
-                            query='(cn=engineering)')
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=engineering)')
         self.assertEqual(sorted(res[0][1][conn.member_attr]),
                          ['cn=bar,ou=users,dc=localhost',
                           'cn=baz,ou=users,dc=localhost'])
@@ -131,11 +151,17 @@ class MemberOfTests(FakeLDAPTests):
 
         conn.delete_s('cn=engineering,ou=groups,dc=localhost')
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo)')
         self.assertEqual(res[0][1].get(conn.memberof_attr, []), [])
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=bar)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=bar)')
         self.assertEqual(res[0][1].get(conn.memberof_attr, []), [])
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=baz)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=baz)')
         self.assertEqual(res[0][1].get(conn.memberof_attr, []), [])

@@ -3,6 +3,11 @@ Change log
 
 3.0 (unreleased)
 ----------------
+- add a test layer using the ``volatildap`` module to compare API call results
+  with the equivalent results from a live LDAP server.
+
+- fix several API discrepancies between this module and ``python-ldap``.
+
 - emulate string/bytes treatment from ``python-ldap`` version 3.3 and up,
   see https://www.python-ldap.org/en/latest/bytes_mode.html and ``README.rst``
   in this folder.

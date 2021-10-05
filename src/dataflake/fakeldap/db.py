@@ -48,6 +48,10 @@ class DataStore(dict):
         elems.reverse()
         tree_pos = self
 
+        if elems[0] not in tree_pos:
+            # Special case, looking for an entirely different base
+            raise ldap.UNWILLING_TO_PERFORM(elems[0])
+
         for elem in elems:
             if elem not in tree_pos:
                 raise ldap.NO_SUCH_OBJECT(elem)

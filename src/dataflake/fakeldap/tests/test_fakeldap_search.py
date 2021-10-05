@@ -11,7 +11,12 @@
 #
 ##############################################################################
 
+import unittest
+
+import ldap
+
 from .base import FakeLDAPTests
+from .base import RealLDAPTests
 
 
 class FakeLDAPSearchTests(FakeLDAPTests):
@@ -22,7 +27,9 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('footwo')
         self._addUser('thirdfoo')
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo)')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 1)
         self.assertEqual(dn_values, ['cn=foo,ou=users,dc=localhost'])
@@ -33,7 +40,9 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('footwo')
         self._addUser('thirdfoo')
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn= foo)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn= foo)')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 1)
         self.assertEqual(dn_values, ['cn=foo,ou=users,dc=localhost'])
@@ -44,7 +53,9 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('footwo')
         self._addUser('thirdfoo')
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=foo )')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo )')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 1)
         self.assertEqual(dn_values, ['cn=foo,ou=users,dc=localhost'])
@@ -55,7 +66,9 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('footwo')
         self._addUser('thirdfoo')
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn= foo )')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn= foo )')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 1)
         self.assertEqual(dn_values, ['cn=foo,ou=users,dc=localhost'])
@@ -66,32 +79,34 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('bar')
         self._addUser('baz')
 
-        res = conn.search_s('ou=users,dc=localhost', query='(objectClass=*)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(objectClass=*)')
         dn_values = [dn for (dn, attr_dict) in res]
-        self.assertEqual(len(dn_values), 3)
-        # Note: searches for all results and not scope BASE will return
-        # RDNs instead of full DNs
         self.assertEqual(set(dn_values),
-                         {'cn=foo', 'cn=bar', 'cn=baz'})
+                         {'ou=users,dc=localhost',
+                          'cn=bar,ou=users,dc=localhost',
+                          'cn=foo,ou=users,dc=localhost',
+                          'cn=baz,ou=users,dc=localhost'})
 
     def test_search_nonspecific_scope_base(self):
-        import ldap
         conn = self._makeOne()
         user_dn, password = self._addUser('foo')
 
-        res = conn.search_s(user_dn, scope=ldap.SCOPE_BASE,
-                            query='(objectClass=*)')
+        res = conn.search_s(user_dn,
+                            ldap.SCOPE_BASE,
+                            filterstr='(objectClass=*)')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 1)
         self.assertEqual(dn_values, ['cn=foo,ou=users,dc=localhost'])
 
     def test_search_specific_scope_base(self):
-        import ldap
         conn = self._makeOne()
         user_dn, password = self._addUser('foo')
 
-        res = conn.search_s(user_dn, scope=ldap.SCOPE_BASE,
-                            query='(&(objectClass=person)(cn=foo))')
+        res = conn.search_s(user_dn,
+                            ldap.SCOPE_BASE,
+                            filterstr='(&(objectClass=inetOrgPerson)(cn=foo))')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 1)
         self.assertEqual(dn_values, ['cn=foo,ou=users,dc=localhost'])
@@ -102,7 +117,9 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('footwo')
         self._addUser('threefoo')
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=*)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=*)')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 3)
         self.assertEqual(set(dn_values),
@@ -117,7 +134,9 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('threefoo')
         self._addUser('bar')
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=*foo*)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=*foo*)')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 3)
         self.assertEqual(set(dn_values),
@@ -131,7 +150,9 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('footwo')
         self._addUser('threefoo')
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=*foo)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=*foo)')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 2)
         self.assertEqual(set(dn_values),
@@ -144,7 +165,9 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('footwo')
         self._addUser('threefoo')
 
-        res = conn.search_s('ou=users,dc=localhost', query='(cn=foo*)')
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo*)')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 2)
         self.assertEqual(set(dn_values),
@@ -157,15 +180,18 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('bar')
         self._addUser('baz')
 
-        query_success = '(&(cn=foo)(objectClass=person))'
-        res = conn.search_s('ou=users,dc=localhost', query=query_success)
+        query_success = '(&(cn=foo)(objectClass=inetOrgPerson))'
+        res = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr=query_success)
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 1)
         self.assertEqual(dn_values, ['cn=foo,ou=users,dc=localhost'])
 
-        query_failure = '(&(cn=foo)(objectClass=inetOrgPerson))'
+        query_failure = '(&(cn=foo)(objectClass=organizationalUnit))'
         self.assertFalse(conn.search_s('ou=users,dc=localhost',
-                         query=query_failure))
+                         ldap.SCOPE_SUBTREE,
+                         filterstr=query_failure))
 
     def test_search_ored_filter(self):
         conn = self._makeOne()
@@ -174,7 +200,8 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('baz')
 
         res = conn.search_s('ou=users,dc=localhost',
-                            query='(|(cn=foo)(cn=bar))')
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(|(cn=foo)(cn=bar))')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 2)
         self.assertEqual(set(dn_values),
@@ -182,11 +209,11 @@ class FakeLDAPSearchTests(FakeLDAPTests):
                           'cn=bar,ou=users,dc=localhost'})
 
     def test_search_invalid_base(self):
-        import ldap
         conn = self._makeOne()
         self._addUser('foo')
         self.assertRaises(ldap.NO_SUCH_OBJECT, conn.search_s,
-                          'o=base', query='(objectClass=*)')
+                          'o=base', ldap.SCOPE_SUBTREE,
+                          filterstr='(objectClass=*)')
 
     def test_search_by_mail(self):
         conn = self._makeOne()
@@ -194,8 +221,10 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('bar', mail=b'bar@bar.com')
         self._addUser('baz', mail=b'baz@baz.com')
 
-        res = conn.search_s('ou=users,dc=localhost',
-                            query='(|(mail=foo@foo.com)(mail=bar@bar.com))')
+        res = conn.search_s(
+            'ou=users,dc=localhost',
+            ldap.SCOPE_SUBTREE,
+            filterstr='(|(mail=foo@foo.com)(mail=bar@bar.com))')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 2)
         self.assertEqual(set(dn_values),
@@ -210,8 +239,10 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser(username2)
         self._addUser('baz')
 
-        res = conn.search_s('ou=users,dc=localhost',
-                            query='(|(cn=%s)(cn=%s))' % (username1, username2))
+        res = conn.search_s(
+            'ou=users,dc=localhost',
+            ldap.SCOPE_SUBTREE,
+            filterstr='(|(cn=%s)(cn=%s))' % (username1, username2))
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 2)
         self.assertEqual(set(dn_values),
@@ -223,7 +254,9 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('foo', mail=b'foo@foo.com')
 
         res = conn.search_s('ou=users,dc=localhost',
-                            query='(cn=foo)', attrs=None)
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo)',
+                            attrlist=None)
         self.assertEqual(len(res), 1)
         dn, attr_dict = res[0]
         self.assertEqual(dn, 'cn=foo,ou=users,dc=localhost')
@@ -237,7 +270,9 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self._addUser('foo', mail=b'foo@foo.com')
 
         res = conn.search_s('ou=users,dc=localhost',
-                            query='(cn=foo)', attrs=['cn', 'mail'])
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo)',
+                            attrlist=['cn', 'mail'])
         self.assertEqual(len(res), 1)
         dn, attr_dict = res[0]
         self.assertEqual(dn, 'cn=foo,ou=users,dc=localhost')
@@ -245,3 +280,8 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self.assertTrue('mail' in attr_dict)
         self.assertFalse('userPassword' in attr_dict)
         self.assertFalse('objectClass' in attr_dict)
+
+
+@unittest.skipIf(RealLDAPTests is object, 'volatildap module not available')
+class RealLDAPSearchTest(FakeLDAPSearchTests, RealLDAPTests):
+    pass

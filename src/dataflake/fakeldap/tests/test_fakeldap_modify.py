@@ -11,22 +11,26 @@
 #
 ##############################################################################
 
+import unittest
+
+import ldap
+
 from .base import FakeLDAPTests
+from .base import RealLDAPTests
 
 
 class FakeLDAPModifyTests(FakeLDAPTests):
 
     def test_modify_wrongbase(self):
-        import ldap
         conn = self._makeOne()
-        self.assertRaises(ldap.NO_SUCH_OBJECT, conn.modify_s,
+        self.assertRaises(ldap.UNWILLING_TO_PERFORM, conn.modify_s,
                           'cn=foo,o=base', [])
 
     def test_modify_wrongrecord(self):
-        import ldap
         conn = self._makeOne()
         self._addUser('foo')
 
+        conn.simple_bind_s(self._rootdn, self._rootpw)
         self.assertRaises(ldap.NO_SUCH_OBJECT, conn.modify_s,
                           'cn=bar,ou=users,dc=localhost', [])
 
@@ -36,69 +40,80 @@ class FakeLDAPModifyTests(FakeLDAPTests):
         conn = self._makeOne()
         self._addUser('foo')
 
-        foo = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
+        foo = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo)')
         old_values = foo[0][1]
-        self.assertEqual(old_values['objectClass'], ['top', 'person'])
+        self.assertEqual(old_values['objectClass'], [b'top', b'inetOrgPerson'])
         self.assertFalse(old_values.get('mail'))
         new_values = copy.deepcopy(old_values)
-        new_values['objectClass'] = ['top', 'inetOrgPerson']
-        new_values['mail'] = [b'foo@email.com']
+        new_values['description'] = [b'foo@email.com']
 
         modlist = modifyModlist(old_values, new_values)
+        conn.simple_bind_s(self._rootdn, self._rootpw)
         conn.modify_s('cn=foo,ou=users,dc=localhost', modlist)
-        foo = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
-        self.assertEqual(foo[0][1]['objectClass'],
-                         ['top', 'inetOrgPerson'])
-        self.assertEqual(foo[0][1]['mail'], [b'foo@email.com'])
+        foo = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo)')
+        self.assertEqual(foo[0][1]['description'], [b'foo@email.com'])
 
     def test_modify_replace(self):
-        import ldap
 
         conn = self._makeOne()
         self._addUser('foo', mail=b'foo@bar.com')
 
-        foo = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
+        foo = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo)')
         old_values = foo[0][1]
         self.assertEqual(old_values['mail'], [b'foo@bar.com'])
 
         modlist = [(ldap.MOD_REPLACE, 'mail', [b'foo@email.com'])]
+        conn.simple_bind_s(self._rootdn, self._rootpw)
         conn.modify_s('cn=foo,ou=users,dc=localhost', modlist)
-        foo = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
+        foo = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo)')
         self.assertEqual(foo[0][1]['mail'], [b'foo@email.com'])
 
     def test_modify_add(self):
-        import ldap
 
         conn = self._makeOne()
         self._addUser('foo', mail=b'foo@bar.com')
 
-        foo = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
+        foo = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo)')
         old_values = foo[0][1]
         self.assertEqual(old_values['mail'], [b'foo@bar.com'])
 
         modlist = [(ldap.MOD_ADD, 'mail', [b'foo@email.com'])]
+        conn.simple_bind_s(self._rootdn, self._rootpw)
         conn.modify_s('cn=foo,ou=users,dc=localhost', modlist)
-        foo = conn.search_s('ou=users,dc=localhost', query='(cn=foo)')
+        foo = conn.search_s('ou=users,dc=localhost',
+                            ldap.SCOPE_SUBTREE,
+                            filterstr='(cn=foo)')
         self.assertEqual(set(foo[0][1]['mail']),
                          {b'foo@email.com', b'foo@bar.com'})
 
     def test_modrdn_wrongbase(self):
-        import ldap
         conn = self._makeOne()
-        self.assertRaises(ldap.NO_SUCH_OBJECT, conn.modrdn_s,
+        conn.simple_bind_s(self._rootdn, self._rootpw)
+        self.assertRaises(ldap.UNWILLING_TO_PERFORM,
+                          conn.modrdn_s,
                           'cn=foo,o=base', 'cn=bar')
 
     def test_modrdn_wrongrecord(self):
-        import ldap
         conn = self._makeOne()
+        conn.simple_bind_s(self._rootdn, self._rootpw)
         self._addUser('foo')
 
         self.assertRaises(ldap.NO_SUCH_OBJECT, conn.modrdn_s,
                           'cn=bar,ou=users,dc=localhost', 'cn=baz')
 
     def test_modrdn_existing_clash(self):
-        import ldap
         conn = self._makeOne()
+        conn.simple_bind_s(self._rootdn, self._rootpw)
         self._addUser('foo')
         self._addUser('bar')
 
@@ -106,21 +121,30 @@ class FakeLDAPModifyTests(FakeLDAPTests):
                           'cn=foo,ou=users,dc=localhost', 'cn=bar')
 
     def test_modrdn_success(self):
-        import ldap
         conn = self._makeOne()
+        conn.simple_bind_s(self._rootdn, self._rootpw)
         self._addUser('foo')
 
         foo = conn.search_s('cn=foo,ou=users,dc=localhost',
-                            scope=ldap.SCOPE_BASE, query='(objectClass=*)')
+                            ldap.SCOPE_BASE,
+                            filterstr='(objectClass=*)')
         self.assertTrue(foo)
         self.assertRaises(ldap.NO_SUCH_OBJECT, conn.search_s,
                           'cn=bar,ou=users,dc=localhost',
-                          scope=ldap.SCOPE_BASE, query='(objectClass=*)')
+                          ldap.SCOPE_BASE,
+                          filterstr='(objectClass=*)')
 
         conn.modrdn_s('cn=foo,ou=users,dc=localhost', 'cn=bar')
         self.assertRaises(ldap.NO_SUCH_OBJECT, conn.search_s,
                           'cn=foo,ou=users,dc=localhost',
-                          scope=ldap.SCOPE_BASE, query='(objectClass=*)')
+                          ldap.SCOPE_BASE,
+                          filterstr='(objectClass=*)')
         bar = conn.search_s('cn=bar,ou=users,dc=localhost',
-                            scope=ldap.SCOPE_BASE, query='(objectClass=*)')
+                            ldap.SCOPE_BASE,
+                            filterstr='(objectClass=*)')
         self.assertTrue(bar)
+
+
+@unittest.skipIf(RealLDAPTests is object, 'volatildap module not available')
+class RealLDAPModifyTests(FakeLDAPModifyTests, RealLDAPTests):
+    pass
