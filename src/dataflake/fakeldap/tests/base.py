@@ -94,20 +94,20 @@ try:
     import volatildap
 
     class RealLDAPLayer:
-    
+
         @classmethod
         def setUp(cls):
             schemas = ['core.schema', 'cosine.schema', 'inetorgperson.schema']
-            cls._slapd = volatildap.LdapServer(suffix='dc=localhost',
-                                               rootdn='cn=Manager,dc=localhost',
-                                               schemas=schemas)
+            cls._slapd = volatildap.LdapServer(
+                            suffix='dc=localhost',
+                            rootdn='cn=Manager,dc=localhost',
+                            schemas=schemas)
             cls._slapd.start()
-    
-    
+
     class RealLDAPTests(FakeLDAPTests):
-    
+
         layer = RealLDAPLayer
-    
+
         def setUp(self):
             self._slapd = self.layer._slapd
             self._slapd.add(
@@ -115,13 +115,13 @@ try:
                               'objectClass': [b'organizationalUnit']},
                  'ou=groups': {'ou': [b'groups'],
                                'objectClass': [b'organizationalUnit']}})
-    
+
             self._rootdn = self._slapd.rootdn
             self._rootpw = self._slapd.rootpw
-    
+
         def tearDown(self):
             self._slapd.reset()
-    
+
         def _makeOne(self, *args, **kw):
             conn = ldap.initialize(self._slapd.uri)
             conn.hash_password = True
