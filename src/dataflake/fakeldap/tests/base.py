@@ -13,7 +13,6 @@
 """ unit tests base classes
 """
 
-import os
 import unittest
 
 import ldap
@@ -92,12 +91,13 @@ class FakeLDAPTests(unittest.TestCase):
 
 
 try:
-
-    # Fail if running on CI, such as GitHib actions
-    if os.environ.get('CI'):
-        raise RuntimeError
-
     import volatildap
+
+    # Try to run a server
+    # safest test, there's too much that can go wrong.
+    srv = volatildap.LdapServer()
+    srv.start()
+    srv.stop()
 
     class RealLDAPLayer:
 
