@@ -94,6 +94,6 @@ class FakeLDAPModifyTests(FakeLDAPTests):
         self.assertFalse(foo)
 
 
-@unittest.skipIf(RealLDAPTests is object, 'volatildap module not available')
+@unittest.skipIf(RealLDAPTests is object, 'LDAP server tests not available')
 class RealLDAPModifyTests(FakeLDAPModifyTests, RealLDAPTests):
     pass

@@ -101,7 +101,7 @@ class FakeLDAPBindTests(FakeLDAPTests):
         self.assertRaises(Exception, conn.whoami_s)
 
 
-@unittest.skipIf(RealLDAPTests is object, 'volatildap module not available')
+@unittest.skipIf(RealLDAPTests is object, 'LDAP server tests not available')
 class RealLDAPBindTests(FakeLDAPBindTests, RealLDAPTests):
 
     @unittest.skip('Only applicable for FakeLDAP connection')
@@ -143,7 +143,7 @@ class HashedPasswordTests(FakeLDAPTests):
                           user_dn, 'INVALID PASSWORD')
 
 
-@unittest.skipIf(RealLDAPTests is object, 'volatildap module not available')
+@unittest.skipIf(RealLDAPTests is object, 'LDAP server tests not available')
 class RealLDAPHashedPasswordTests(HashedPasswordTests, RealLDAPTests):
     pass
 
