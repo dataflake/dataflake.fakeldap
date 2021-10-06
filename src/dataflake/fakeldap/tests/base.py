@@ -94,7 +94,7 @@ class FakeLDAPTests(unittest.TestCase):
 try:
 
     # Fail if running on CI, such as GitHib actions
-    if os.envoron.get('CI'):
+    if os.environ.get('CI'):
         raise RuntimeError
 
     import volatildap
