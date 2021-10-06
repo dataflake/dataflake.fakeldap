@@ -40,9 +40,16 @@ jobs:
         set -ex
         sudo apt update
         sudo apt install -y ldap-utils slapd libldap2-dev libsasl2-dev
-        echo '/tmp/** rwk' >/tmp/settings
-        echo ${HOME}'/**' rw >>/tmp/settings
+    - name: Create AppArmor configuration
+      uses: finnp/create-file-action@1.0.0
+      env:
+        FILE_NAME: "/tmp/settings"
+        FILE_BASE64: "L3RtcC8qKiByd2sKL2hvbWUvcnVubmVyL3dvcmsvKiogcncK"
+    - name: Put AppArmor configuration in place
+      run: |
+        set -ex
         sudo mv /tmp/settings /etc/apparmor.d/local/usr.sbin.slapd
+        cat /etc/apparmor.d/local/usr.sbin.slapd
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
