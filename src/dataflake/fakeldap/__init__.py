@@ -334,6 +334,7 @@ class RaisingFakeLDAPConnection(FakeLDAPConnection):
 class FixedResultFakeLDAPConnection(FakeLDAPConnection):
     search_results = []
 
+    @check_types(('base', str), ('filterstr', str))
     def search_s(self, base, scope,
                  filterstr='(objectClass=*)', attrlist=None):
         return self.search_results
