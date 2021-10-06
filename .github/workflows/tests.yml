@@ -45,7 +45,6 @@ jobs:
       env:
         FILE_NAME: "/tmp/settings"
         FILE_BASE64: "L3RtcC8qKiByd2sKL2hvbWUvcnVubmVyL3dvcmsvKiogcncK"
-    - name: Put AppArmor configuration in place
       run: |
         set -ex
         sudo mv /tmp/settings /etc/apparmor.d/local/usr.sbin.slapd
