@@ -66,7 +66,7 @@ setup(name=NAME,
       zip_safe=False,
       install_requires=[
         'setuptools',
-        'python-ldap',
+        'python-ldap >= 3.3',
         ],
       tests_require=['python-ldap', 'volatildap'],
       test_suite='%s.tests' % NAME,
