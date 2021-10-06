@@ -40,6 +40,9 @@ jobs:
         set -ex
         sudo apt update
         sudo apt install -y ldap-utils slapd libldap2-dev libsasl2-dev
+        echo '/tmp/** rwk' >/tmp/settings
+        echo ${HOME}'/**' rw >>/tmp/settings
+        sudo mv /tmp/settings /etc/apparmor.d/local/usr.sbin.slapd
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
