@@ -1,7 +1,7 @@
 Change log
 ==========
 
-3.0 (unreleased)
+3.0 (2021-11-02)
 ----------------
 - add a test layer using the ``volatildap`` module to compare API call results
   with the equivalent results from a live LDAP server.
