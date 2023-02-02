@@ -14,6 +14,7 @@
 """
 
 from copy import deepcopy
+
 import ldap
 
 from .db import DataStore
@@ -21,6 +22,7 @@ from .queryparser import Parser
 from .utils import check_types
 from .utils import explode_dn
 from .utils import hash_pwd
+
 
 PARSER = Parser()
 ANY = PARSER.parse_query('(objectClass=*)')
@@ -106,7 +108,7 @@ class FakeLDAPConnection:
             else:
                 res = [(base,
                         deepcopy(self._filter_attrlist(tree_pos, attrlist)))]
-                res.extend([('%s,%s' % (k, base),
+                res.extend([('{},{}'.format(k, base),
                              deepcopy(self._filter_attrlist(v, attrlist)))
                            for k, v in tree_pos.items()])
                 return res

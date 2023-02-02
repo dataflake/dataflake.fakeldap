@@ -95,7 +95,7 @@ class Filter:
                     if base.startswith(rdn):
                         dn = base
                     else:
-                        dn = '%s,%s' % (rdn, base)
+                        dn = '{},{}'.format(rdn, base)
                     res.append((dn, record))
 
         return res

@@ -17,6 +17,7 @@ from .op import Op
 from .queryfilter import Filter
 from .utils import check_types
 
+
 # From http://www.ietf.org/rfc/rfc2254.txt, Section 4
 # with references to http://www.ietf.org/rfc/rfc2251.txt
 #
@@ -56,7 +57,7 @@ FLTR_RE = re.compile(FLTR, re.UNICODE)
 FULL = r'\((?P<op>(%s))(?P<fltr>.*)\)' % _OP
 FULL_RE = re.compile(FULL)
 
-OP = r'\((?P<op>(%s))(?P<fltr>(%s)*)\)' % (_OP, _FLTR)
+OP = r'\((?P<op>({}))(?P<fltr>({})*)\)'.format(_OP, _FLTR)
 OP_RE = re.compile(OP)
 
 
