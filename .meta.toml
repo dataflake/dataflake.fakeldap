@@ -24,5 +24,5 @@ fail-under = 95
 
 [check-manifest]
 additional-ignores = [
-    "pyvenv.cfg",
+    "docs/_build/html/_static/*",
     ]

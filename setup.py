@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2012-2021 Jens Vagelpohl and Contributors. All Rights Reserved.
+# Copyright (c) 2008-2023 Jens Vagelpohl and Contributors. All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
@@ -17,16 +17,13 @@ from setuptools import find_packages
 from setuptools import setup
 
 
-NAME = 'dataflake.fakeldap'
-
-
 def read(*rnames):
     with open(os.path.join(os.path.dirname(__file__), *rnames)) as f:
         return f.read()
 
 
-setup(name=NAME,
-      version=read('version.txt').strip(),
+setup(name='dataflake.fakeldap',
+      version='3.1.dev0',
       description='Mocked-up LDAP connection library',
       long_description=read('README.rst'),
       classifiers=[
@@ -52,10 +49,11 @@ setup(name=NAME,
       keywords='ldap ldapv3',
       author="Jens Vagelpohl",
       author_email="jens@dataflake.org",
-      url="https://github.com/dataflake/%s" % NAME,
+      url="https://github.com/dataflake/dataflake.fakeldap",
       project_urls={
-        'Source code': 'https://github.com/dataflake/%s' % NAME,
-        'Issue Tracker': 'https://github.com/dataflake/%s/issues' % NAME,
+        'Sources': 'https://github.com/dataflake/dataflake.fakeldap',
+        'Issue Tracker': ('https://github.com/dataflake/'
+                          'dataflake.fakeldap/issues'),
       },
       license="ZPL 2.1",
       packages=find_packages('src'),
@@ -69,11 +67,11 @@ setup(name=NAME,
         'python-ldap >= 3.3',
         ],
       tests_require=['python-ldap', 'volatildap'],
-      test_suite='%s.tests' % NAME,
+      test_suite='dataflake.fakeldap.tests',
       extras_require={
         'docs': ['Sphinx',
-                 'repoze.sphinx.autointerface',
                  'sphinx_rtd_theme',
+                 'pkginfo'
                  ],
         },
       )
