@@ -108,7 +108,7 @@ class FakeLDAPConnection:
             else:
                 res = [(base,
                         deepcopy(self._filter_attrlist(tree_pos, attrlist)))]
-                res.extend([('{},{}'.format(k, base),
+                res.extend([(f'{k},{base}',
                              deepcopy(self._filter_attrlist(v, attrlist)))
                            for k, v in tree_pos.items()])
                 return res

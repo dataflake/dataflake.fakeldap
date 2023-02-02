@@ -26,3 +26,10 @@ fail-under = 94
 additional-ignores = [
     "docs/_build/html/_static/*",
     ]
+
+[github-actions]
+additional-install = [
+    "set -ex",
+    "sudo apt update",
+    "sudo apt install -y ldap-utils slapd libldap2-dev libsasl2-dev",
+    ]
