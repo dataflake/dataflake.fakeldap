@@ -1,8 +1,10 @@
 Change log
 ==========
 
-3.1 (unreleased)
+4.0 (unreleased)
 ----------------
+
+- Drop support for Python 2.7, 3.5, 3.6.
 
 
 3.0 (2021-11-02)

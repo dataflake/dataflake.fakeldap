@@ -242,7 +242,7 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         res = conn.search_s(
             'ou=users,dc=localhost',
             ldap.SCOPE_SUBTREE,
-            filterstr='(|(cn=%s)(cn=%s))' % (username1, username2))
+            filterstr=f'(|(cn={username1})(cn={username2}))')
         dn_values = [dn for (dn, attr_dict) in res]
         self.assertEqual(len(dn_values), 2)
         self.assertEqual(set(dn_values),

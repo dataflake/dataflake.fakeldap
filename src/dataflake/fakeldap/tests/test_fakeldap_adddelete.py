@@ -44,6 +44,7 @@ class FakeLDAPModifyTests(FakeLDAPTests):
 
     def test_add_success(self):
         import copy
+
         from ldap.modlist import addModlist
         conn = self._makeOne()
         conn.simple_bind_s(self._rootdn, self._rootpw)

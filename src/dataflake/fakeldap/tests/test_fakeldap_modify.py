@@ -36,6 +36,7 @@ class FakeLDAPModifyTests(FakeLDAPTests):
 
     def test_modify_success(self):
         import copy
+
         from ldap.modlist import modifyModlist
         conn = self._makeOne()
         self._addUser('foo')
