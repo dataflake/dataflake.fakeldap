@@ -32,4 +32,5 @@ additional-install = [
     "set -ex",
     "sudo apt update",
     "sudo apt install -y ldap-utils slapd libldap2-dev libsasl2-dev",
+    "pip install python-ldap",
     ]
