@@ -1,11 +1,16 @@
-=============
- Development
-=============
+Development
+===========
+
+Bug tracker
+-----------
+For bug reports, suggestions or questions please use the 
+GitHub issue tracker at
+https://github.com/dataflake/dataflake.fakeldap/issues.
 
 
 Getting the source code
-=======================
-The source code is maintained on GitHub. To check out the trunk:
+-----------------------
+The source code is maintained on GitHub. To check out the main branch:
 
 .. code-block:: console
 
@@ -15,100 +20,47 @@ You can also browse the code online at
 https://github.com/dataflake/dataflake.fakeldap
 
 
-Bug tracker
-===========
-For bug reports, suggestions or questions please use the 
-GitHub issue tracker at
-https://github.com/dataflake/dataflake.fakeldap/issues.
+Preparing the development sandbox
+---------------------------------
+The following steps only need to be done once to install all the tools and
+scripts needed for building, packaging and testing. First, create a
+:term:`Virtual environment`. The example here uses Python 3.11, but any Python
+version supported by this package will work. Then install all the required
+tools:
+
+.. code-block:: console
+
+    $ cd dataflake.fakeldap
+    $ python3.11 -m venv .
+    $ bin/pip install -U pip wheel
+    $ bin/pip install -U setuptools zc.buildout tox twine
 
 
 Running the tests
-=================
-
-.. note::
-    The module now uses :mod:`volatildap` to do comparison tests between
-    this module and a live LDAP server. In order for this to work you must have
-    a ``slapd`` and ``slaptest`` binary for OpenLDAP version 2.4 in the search
-    path.
-
-:mod:`dataflake.fakeldap` ships with its own :file:`buildout.cfg` buildout
-configuration file. The buildout procedure will set up all requirements
-for running the unit tests and building the documentation.
+-----------------
+You can use ``tox`` to run the unit and integration tests in this package. The
+shipped ``tox`` configuration can run the tests for all supported platforms.
+You can read the entire long list of possible options on the
+`tox CLI interface documentation page
+<https://tox.wiki/en/latest/cli_interface.html>`_, but the following examples
+will get you started:
 
 .. code-block:: console
 
-    $ cd dataflake.fakeldap
-    $ python2.7 -m virtualenv .     # PYTHON 2
-    $ python3 -m venv .             # PYTHON 3
-    $ bin/pip install -U pip        # Make sure pip is compatible
-    $ bin/pip install zc.buildout
-    $ bin/buildout
-    ...
-
-Once you have a buildout, the tests can be run as follows:
-
-.. code-block:: console
-
-   $ bin/test 
-   Running tests at level 1
-   Running zope.testrunner.layer.UnitTests tests:
-     Set up zope.testrunner.layer.UnitTests in 0.000 seconds.
-     Running:
-   ..............................................................
-     Ran 62 tests with 0 failures and 0 errors in 0.043 seconds.
-   Tearing down left over layers:
-     Tear down zope.testrunner.layer.UnitTests in 0.000 seconds.
+    $ bin/tox -l       # List all available environments
+    $ bin/tox -pall    # Run tests for all environments in parallel
+    $ bin/tox -epy311  # Run tests on Python 3.11 only
+    $ bin/tox -elint   # Run package sanity checks and lint the code
 
 
-The package also ships with a ``tox`` configuration that will run the tests
-across all supported Python versons, and the linting and code coverage check:
+Building the documentation
+--------------------------
+``tox`` is also used to build the :term:`Sphinx`-based documentation. The
+input files are in the `docs` subfolder and the documentation build step will
+compile them to HTML. The output is stored in `docs/_build/html/`:
 
 .. code-block:: console
 
-    $ bin/tox
-    ...
-    py27: commands succeeded
-    py34: commands succeeded
-    py35: commands succeeded
-    py36: commands succeeded
-    py37: commands succeeded
-    py38: commands succeeded
-    pypy: commands succeeded
-    pypy3: commands succeeded
-    coverage: commands succeeded
-    flake8: commands succeeded
+    $ bin/tox -edocs
 
-
-Building the documentation using :mod:`zc.buildout`
-===================================================
-The :mod:`dataflake.fakeldap` buildout installs the Sphinx 
-scripts required to build the documentation, including testing 
-its code snippets:
-
-.. code-block:: console
-
-    $ cd docs
-    $ make html
-    ...
-    build succeeded.
-
-    Build finished. The HTML pages are in _build/html.
-
-
-Making a release
-================
-These instructions assume that you have a development sandbox set 
-up using :mod:`zc.buildout` as the scripts used here are generated 
-by the buildout.
-
-.. code-block:: console
-
-    $ cd dataflake.fakeldap
-    $ bin/pip install -U wheel twine
-    $ rm -rf dist
-    $ bin/buildout -N
-    $ bin/buildout setup setup.py sdist bdist_wheel
-    $ bin/twine upload -s dist/*
-
-The ``bin/buildout`` step will make sure the correct package information 
-is used.
+If the documentation contains doctests they are run as well.

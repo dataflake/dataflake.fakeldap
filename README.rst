@@ -18,9 +18,11 @@
    :target: https://pypi.python.org/pypi/dataflake.fakeldap
    :alt: Python versions
 
+
 ====================
  dataflake.fakeldap
 ====================
+
 This package offers a mock ``python-ldap`` library that can be used 
 for testing code relying on ``python-ldap`` without having to configure 
 and populate a real directory server.
@@ -40,15 +42,3 @@ description of this behavior.
 Since queries are un-encoded string values and attribute values passed in the
 query would never match bytes values in the data store, searches will always
 test against both unencoded and bytes values.
-
-
-Documentation
-=============
-Full documentation is available at
-https://dataflakefakeldap.readthedocs.io/
-
-
-Bug tracker
-===========
-A bug tracker is available at
-https://github.com/dataflake/dataflake.fakeldap/issues

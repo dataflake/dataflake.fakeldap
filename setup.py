@@ -49,6 +49,7 @@ setup(name='dataflake.fakeldap',
       author_email="jens@dataflake.org",
       url="https://github.com/dataflake/dataflake.fakeldap",
       project_urls={
+        'Documentation': 'https://dataflakefakeldap.readthedocs.io/',
         'Sources': 'https://github.com/dataflake/dataflake.fakeldap',
         'Issue Tracker': ('https://github.com/dataflake/'
                           'dataflake.fakeldap/issues'),
