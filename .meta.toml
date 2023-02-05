@@ -1,12 +1,12 @@
 # Generated from:
-# https://github.com/zopefoundation/meta/tree/master/config/pure-python
+# https://github.com/zopefoundation/meta/tree/master/config/zope-product
 [meta]
-template = "pure-python"
+template = "zope-product"
 commit-id = "e5c611fb"
 
 [python]
 with-windows = false
-with-pypy = true
+with-pypy = false
 with-future-python = true
 with-docs = true
 with-sphinx-doctests = false
