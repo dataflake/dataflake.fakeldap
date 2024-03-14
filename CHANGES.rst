@@ -1,7 +1,7 @@
 Change log
 ==========
 
-4.2 (unreleased)
+4.2 (2024-03-14)
 ----------------
 
 - Switch to PEP 420 implicit namespace support.
