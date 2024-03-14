@@ -4,6 +4,10 @@ Change log
 4.2 (unreleased)
 ----------------
 
+- Switch to PEP 420 implicit namespace support.
+
+- Add support for Python 3.13.
+
 
 4.1 (2024-01-03)
 ----------------

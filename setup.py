@@ -13,7 +13,6 @@
 
 import os
 
-from setuptools import find_packages
 from setuptools import setup
 
 
@@ -55,9 +54,8 @@ setup(name='dataflake.fakeldap',
                           'dataflake.fakeldap/issues'),
       },
       license="ZPL 2.1",
-      packages=find_packages('src'),
+      packages=['dataflake.fakeldap'],
       package_dir={'': 'src'},
-      namespace_packages=['dataflake'],
       python_requires='>=3.7',
       include_package_data=True,
       zip_safe=False,
