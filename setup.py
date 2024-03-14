@@ -22,7 +22,7 @@ def read(*rnames):
 
 
 setup(name='dataflake.fakeldap',
-      version='4.2',
+      version='4.3.dev0',
       description='Mocked-up LDAP connection library',
       long_description=read('README.rst'),
       classifiers=[
