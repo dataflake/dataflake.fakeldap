@@ -5,29 +5,26 @@
 
 import datetime
 import os
-import pkginfo
 import sys
+from importlib.metadata import distribution
 
-parent = os.path.dirname(os.path.dirname(__file__))
-parent_dir = os.path.abspath(parent)
-pkg_info = pkginfo.Develop(parent_dir)
-pkg_version = pkg_info.version or ''
+
+sys.path.append(os.path.abspath('../src'))
+rqmt = distribution('dataflake.fakeldap')
 year = datetime.datetime.now().year
 
 # -- Project information -----------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'dataflake.fakeldap'
 copyright = '2010-%i, Jens Vagelpohl and Contributors' % year
 author = 'Jens Vagelpohl'
 
 # The short X.Y version.
-version = pkg_version.replace('.dev0', '')
+version = '%s.%s' % tuple(map(int, rqmt.version.split('.')[:2]))
 # The full version, including alpha/beta/rc tags.
-release = pkg_version
+release = rqmt.version
 
 # -- General configuration ---------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = []
 templates_path = ['_templates']
@@ -35,7 +32,6 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 language = 'en'
 
 # -- Options for HTML output -------------------------------------------------
-# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'furo'
 html_static_path = ['_static']

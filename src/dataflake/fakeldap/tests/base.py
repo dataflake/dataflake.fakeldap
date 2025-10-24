@@ -105,9 +105,9 @@ try:
         def setUp(cls):
             schemas = ['core.schema', 'cosine.schema', 'inetorgperson.schema']
             cls._slapd = volatildap.LdapServer(
-                            suffix='dc=localhost',
-                            rootdn='cn=Manager,dc=localhost',
-                            schemas=schemas)
+                suffix='dc=localhost',
+                rootdn='cn=Manager,dc=localhost',
+                schemas=schemas)
             cls._slapd.start()
 
     class RealLDAPTests(FakeLDAPTests):
@@ -137,4 +137,6 @@ try:
             return conn
 
 except (ImportError, SyntaxError, RuntimeError):
+    import traceback
+    traceback.print_exc()
     RealLDAPTests = object

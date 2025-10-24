@@ -260,10 +260,10 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self.assertEqual(len(res), 1)
         dn, attr_dict = res[0]
         self.assertEqual(dn, 'cn=foo,ou=users,dc=localhost')
-        self.assertTrue('cn' in attr_dict)
-        self.assertTrue('mail' in attr_dict)
-        self.assertTrue('userPassword' in attr_dict)
-        self.assertTrue('objectClass' in attr_dict)
+        self.assertIn('cn', attr_dict)
+        self.assertIn('mail', attr_dict)
+        self.assertIn('userPassword', attr_dict)
+        self.assertIn('objectClass', attr_dict)
 
     def test_return_filtered_attributes(self):
         conn = self._makeOne()
@@ -276,10 +276,10 @@ class FakeLDAPSearchTests(FakeLDAPTests):
         self.assertEqual(len(res), 1)
         dn, attr_dict = res[0]
         self.assertEqual(dn, 'cn=foo,ou=users,dc=localhost')
-        self.assertTrue('cn' in attr_dict)
-        self.assertTrue('mail' in attr_dict)
-        self.assertFalse('userPassword' in attr_dict)
-        self.assertFalse('objectClass' in attr_dict)
+        self.assertIn('cn', attr_dict)
+        self.assertIn('mail', attr_dict)
+        self.assertNotIn('userPassword', attr_dict)
+        self.assertNotIn('objectClass', attr_dict)
 
 
 @unittest.skipIf(RealLDAPTests is object, 'LDAP server tests not available')

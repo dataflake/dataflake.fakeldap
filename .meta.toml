@@ -2,7 +2,7 @@
 # https://github.com/zopefoundation/meta/tree/master/config/zope-product
 [meta]
 template = "zope-product"
-commit-id = "1351c95d"
+commit-id = "d02675f1"
 
 [python]
 with-windows = false
@@ -32,4 +32,19 @@ additional-install = [
     "set -ex",
     "sudo apt update",
     "sudo apt install -y ldap-utils slapd libldap2-dev libsasl2-dev",
+    ]
+
+[manifest]
+additional-rules = [
+    "include *.yaml",
+    "recursive-exclude docs/_build *.txt",
+    ]
+
+[readthedocs]
+build-extra = [
+    "apt_packages:",
+    "  - ldap-utils",
+    "  - slapd",
+    "  - libldap2-dev",
+    "  - libsasl2-dev",
     ]

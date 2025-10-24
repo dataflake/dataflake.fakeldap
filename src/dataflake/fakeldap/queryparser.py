@@ -57,7 +57,7 @@ FLTR_RE = re.compile(FLTR, re.UNICODE)
 FULL = r'\((?P<op>(%s))(?P<fltr>.*)\)' % _OP
 FULL_RE = re.compile(FULL)
 
-OP = r'\((?P<op>({}))(?P<fltr>({})*)\)'.format(_OP, _FLTR)
+OP = fr'\((?P<op>({_OP}))(?P<fltr>({_FLTR})*)\)'
 OP_RE = re.compile(OP)
 
 
